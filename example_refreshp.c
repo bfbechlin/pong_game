@@ -23,17 +23,34 @@ int main(int argc, char *argv[])
     noecho(); //nao exibe as teclas pressionadas
     cbreak(); //getch nao interromper a execucao
     timeout(0); //tempo limite para o usuario pressionar a tecla
+	start_color(); //inicia terminal com cores
+	init_pair(1, COLOR_RED, COLOR_GREEN); //inicia um par de cores
+	init_pair(2, COLOR_WHITE, COLOR_BLACK);
     int ch = 0;
-
+	
+	attron(COLOR_PAIR(1));
     // desenha a tela
     for(i=0; i<HEIGHT; i++){
         for(j=0; j<WIDTH; j++){
-            if(i == 0 || i == HEIGHT-1) printw("X");
-            else if(j == 0 || j == WIDTH-1) printw("X");
-            else printw (" ");
+            if(i == 0 || i == HEIGHT-1){
+				attron(COLOR_PAIR(1));
+				printw ("+");
+				attron(COLOR_PAIR(1));
+			}
+            else if(j == 0 || j == WIDTH-1){
+				attron(COLOR_PAIR(1));
+				printw ("+");
+				attron(COLOR_PAIR(1));
+			}
+            else{ 
+				attron(COLOR_PAIR(2));
+				printw (" ");
+				attron(COLOR_PAIR(2));
+			}
         }
         printw("\n");
     }
+	attroff(COLOR_PAIR(1));
 
      while(ch != 27) // Enquanto a tecla ESC nao for pressionada
     {

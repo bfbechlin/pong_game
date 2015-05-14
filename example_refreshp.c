@@ -9,14 +9,40 @@
 
 #define WIDTH 30
 #define HEIGHT 14
+#define TRUE 1
+#define FALSE 0
+
+typedef char boolean;
+
+typedef struct{
+	unsigned int posX;
+	unsigned int posY;
+	int velX;
+	int velY;
+	boolean enabled;
+	
+}ball;
 
 void setCursor(int x,int y){
     move(y, x);
 }
 
+void collisionVerificationScene(ball *dummy_ball){
+	if(dummy_ball->posX + dummy_ball->velX == 0 || dummy_ball->posX + dummy_ball->velX == WIDTH-1) 
+		dummy_ball->velX*=-1;
+    if(dummy_ball->posY + dummy_ball->velY == 0 || dummy_ball->posY + dummy_ball->velY == HEIGHT-1) 
+		dummy_ball->velY*=-1;
+}
+
+void attBallPos(ball *dummy_ball){
+	dummy_ball->posX += dummy_ball->velX;
+    dummy_ball->posY += dummy_ball->velY;
+}
 int main(int argc, char *argv[])
 {
-    int i, j, posX=WIDTH/2, posY=HEIGHT/2, dirX=1, dirY=1;
+    int i, j;
+	ball b = {.posX=WIDTH/2, .posY=HEIGHT/2, .velX=1, .velY=1, .enabled = TRUE};
+	
 
     initscr(); //inicializa ncurses
     curs_set(FALSE); //oculta o cursor do terminal
@@ -55,18 +81,16 @@ int main(int argc, char *argv[])
      while(ch != 27) // Enquanto a tecla ESC nao for pressionada
     {
 
-        setCursor(posX, posY); // altera a posicao do cursor para o da bola
+        setCursor(b.posX, b.posY); // altera a posicao do cursor para o da bola
         printw(" "); // imprime um espaco sobre a bola
 
         // verifica colisoes
-        if(posX+dirX == 0 || posX+dirX == WIDTH-1) dirX*=-1;
-        if(posY+dirY == 0 || posY+dirY == HEIGHT-1) dirY*=-1;
+        collisionVerificationScene(&b);
 
         //movimenta a bola
-        posX += dirX;
-        posY += dirY;
+        attBallPos(&b);
 
-        setCursor(posX, posY); //altera a posicao do cursor paraa nova posica da bola
+        setCursor(b.posX, b.posY); //altera a posicao do cursor paraa nova posica da bola
         printw("O"); //imprime a bola
 
         refresh(); //atualiza a tela
@@ -75,3 +99,4 @@ int main(int argc, char *argv[])
     endwin(); //finaliza o ncurses
     return 0;
 }
+

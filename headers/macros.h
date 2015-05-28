@@ -5,6 +5,10 @@
 #define WIDTH 80
 #define HEIGHT 40
 
+// GAME WINDOW
+#define GAME_WIDTH 80
+#define GAME_HEIGHT 40
+
 // BOOL
 #define TRUE 1
 #define FALSE 0
@@ -15,5 +19,9 @@
 #define UP_ARROW 38
 #define RIGTH_ARROW 39
 #define DOWN_ARROW 40
+
+// MAP FAZER macros de protocolo
+
+
 
 #endif

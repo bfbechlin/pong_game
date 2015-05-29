@@ -5,22 +5,24 @@
 #include "macros.h"
 
 // BALL
-void ballControl(BALL*, LEVEL);
+void ballControl(BALL*, FRAME*, LEVEL);
 void ballAttPos(BALL*);
-int ballCollisionVerification(BALL*, LEVEL);
-void ballDraw(BALL*, LEVEL);
+int ballCollisionVerification(BALL*, FRAME*);
+void ballDraw(BALL*, FRAME *);
 
 // PADDLE
 void padAttPos(PADDLE*);
 void padCollisionVerification(PADDLE*, LEVEL);
-void padDraw(PADDLE*, LEVEL);
-void padControl(PADDLE*, LEVEL, int);
+void padDraw(PADDLE*, FRAME*, int);
+void padControl(PADDLE*, FRAME*, LEVEL, int);
 int padKeyBoardControl(PADDLE*, int, int, int);
 
 // GRAPH
+void frameDraw(FRAME);
 void setCursor(int, int);
-void sceneDraw(LEVEL);
+void configWindow();
 
 // LEVEL
 void loadMap(int barrerTable[MAP_HEIGHT][MAP_WIDTH], char*);
+void cpMaptoFrame(FRAME *, LEVEL);
 #endif

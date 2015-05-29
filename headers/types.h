@@ -16,23 +16,18 @@ typedef struct
 }COORD;
 
 typedef struct{
-    // Posições relacionadas com a primeira posição de um array
     COORD position;
     COORD velocity;
     BOOL enabled;
 }BALL;
 
 typedef struct{
-    // Posições relacionadas com a primeira posição de um array
-    COORD position;
-    // Velocidades X e Y
-    COORD velocity;
-    // Tamanho da plataforma
-    unsigned int len;
-    BOOL vertical;
-    char printPad[MAP_HEIGHT/2];
-    int color;
 
+    COORD position;
+    COORD velocity;
+    unsigned int len;
+
+    BOOL vertical;
 }PADDLE;
 
 typedef struct{
@@ -41,4 +36,9 @@ typedef struct{
     int mode;
 }LEVEL;
 
+typedef struct{
+    int src[MAP_HEIGHT][MAP_WIDTH];
+    int width;
+    int height;
+}FRAME;
 #endif

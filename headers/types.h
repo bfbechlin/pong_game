@@ -29,12 +29,16 @@ typedef struct{
     COORD velocity;
     // Tamanho da plataforma
     unsigned int len;
+    BOOL vertical;
+    char printPad[MAP_HEIGHT/2];
+    int color;
 
 }PADDLE;
 
 typedef struct{
-    int map[GAME_HEIGHT][GAME_WIDTH];
+    int map[MAP_HEIGHT][MAP_WIDTH];
     int dificult;
+    int mode;
 }LEVEL;
 
 #endif

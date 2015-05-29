@@ -1,27 +1,35 @@
 #ifndef MACROS_H
 #define MACROS_H
 
-// SIZE WINDOW
-#define WIDTH 80
-#define HEIGHT 40
-
-// GAME WINDOW
-#define GAME_WIDTH 80
-#define GAME_HEIGHT 40
-
 // BOOL
 #define TRUE 1
 #define FALSE 0
 
+// WINDOW SIZE
+#define WIDTH 82
+#define HEIGHT 42
+
+// MAP SIZE
+#define MAP_WIDTH 82
+#define MAP_HEIGHT 42
+
+// MAP
+#define VOID_WALL 0
+#define TOP_WALL 1
+#define BOT_WALL 2
+#define LEFT_WALL 3
+#define RIGHT_WALL 4
+#define CORNER_WALL 5
+#define BLOCK_WALL 6
+
 // TECLAS
 #define ESC 27
-#define LEFT_ARROW  37
-#define UP_ARROW 38
-#define RIGTH_ARROW 39
-#define DOWN_ARROW 40
-
-// MAP FAZER macros de protocolo
 
 
+// CORES
+#define RED 1
+#define GREEN  2
+#define BLACK 3
+#define WHITE 4
 
 #endif

@@ -1,6 +1,7 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
+#include "types.h"
 #include "macros.h"
 
 // BALL
@@ -9,11 +10,17 @@ void ballAttPos(BALL*);
 int ballCollisionVerification(BALL*, LEVEL);
 void ballDraw(BALL*, LEVEL);
 
+// PADDLE
+void padAttPos(PADDLE*);
+void padCollisionVerification(PADDLE*, LEVEL);
+void padDraw(PADDLE*, LEVEL);
+void padControl(PADDLE*, LEVEL, int);
+int padKeyBoardControl(PADDLE*, int, int, int);
 
 // GRAPH
-void setCursor(COORD);
+void setCursor(int, int);
 void sceneDraw(LEVEL);
 
 // LEVEL
-void loadMap(int barrerTable[GAME_HEIGHT][GAME_WIDTH], char*);
+void loadMap(int barrerTable[MAP_HEIGHT][MAP_WIDTH], char*);
 #endif

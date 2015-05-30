@@ -30,13 +30,6 @@ void loadMap(int barrerTable[MAP_HEIGHT][MAP_WIDTH], char* fileName){
                 barrerTable[i][j] = BOT_BLOCK;
         }
     }
-    // Atualizando os cantos
-    /*
-    barrerTable[0][0] = CORNER_BLOCK;
-    barrerTable[0][MAP_WIDTH-1] = CORNER_BLOCK;
-    barrerTable[MAP_HEIGHT-1][0] = CORNER_BLOCK;
-    barrerTable[MAP_HEIGHT-1][MAP_WIDTH-1] = CORNER_BLOCK;
-    */
     fclose(file);
 }
 void cpMaptoFrame(FRAME *frameGame, LEVEL level){

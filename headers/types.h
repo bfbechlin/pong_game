@@ -26,14 +26,16 @@ typedef struct{
     COORD position;
     COORD velocity;
     unsigned int len;
-
     BOOL vertical;
+
 }PADDLE;
 
 typedef struct{
     int map[MAP_HEIGHT][MAP_WIDTH];
     int dificult;
     int mode;
+    int nPad;
+    int nBall;
 }LEVEL;
 
 typedef struct{
@@ -41,4 +43,5 @@ typedef struct{
     int width;
     int height;
 }FRAME;
+
 #endif

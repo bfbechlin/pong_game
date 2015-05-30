@@ -7,7 +7,7 @@ void frameDraw(FRAME frame){
     for(i=0; i< MAP_HEIGHT; i++){
         for(j=0; j< MAP_WIDTH; j++){
             // PAREDES EXTENAS
-            if(frame.src[i][j] >=TOP_BLOCK && frame.src[i][j] <= CORNER_BLOCK){
+            if(frame.src[i][j] >= TOP_BLOCK && frame.src[i][j] <= CORNER_BLOCK){
                 attron(COLOR_PAIR(2));
                 addch(' ');
                 attroff(COLOR_PAIR(2));

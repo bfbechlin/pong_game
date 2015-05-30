@@ -1,29 +1,29 @@
 #include "./headers/header.h"
 
-void padAttPos(PADDLE* dummy_pad){
+void padAttPos(PADDLE *dummy_pad){
     dummy_pad->position.x += dummy_pad->velocity.x;
     dummy_pad->position.y += dummy_pad->velocity.y;
 }
-void padCollisionVerification(PADDLE* dummy_pad, LEVEL level){
+void padCollisionVerification(PADDLE *dummy_pad, FRAME *frameGame){
     int row, col;
     row = dummy_pad->position.y + dummy_pad->velocity.y;
     col = dummy_pad->position.x + dummy_pad->velocity.x;
 
-    if(level.map[row][dummy_pad->position.x] != VOID_BLOCK){
+    if(frameGame->src[row][dummy_pad->position.x] == TOP_BLOCK){
         dummy_pad->velocity.y = 0;
     }
-    else if(level.map[row + dummy_pad->len-1][dummy_pad->position.x] != VOID_BLOCK){
+    else if(frameGame->src[row + dummy_pad->len-1][dummy_pad->position.x] == BOT_BLOCK){
         dummy_pad->velocity.y = 0;
     }
 
-    if(level.map[dummy_pad->position.y][col] != VOID_BLOCK){
+    if(frameGame->src[dummy_pad->position.y][col] == LEFT_BLOCK){
         dummy_pad->velocity.x = 0;
     }
-    else if(level.map[dummy_pad->position.y][col + dummy_pad->len-1] != VOID_BLOCK){
+    else if(frameGame->src[dummy_pad->position.y][col + dummy_pad->len-1] == RIGHT_BLOCK){
         dummy_pad->velocity.x = 0;
     }
 }
-void padDraw(PADDLE* dummy_pad, FRAME *frameGame, int charCode){
+void padDraw(PADDLE *dummy_pad, FRAME *frameGame, int charCode){
     int i;
     
     if(dummy_pad->vertical == FALSE){
@@ -45,10 +45,10 @@ void padDraw(PADDLE* dummy_pad, FRAME *frameGame, int charCode){
         }
     }
 }
-void padControl(PADDLE* dummy_pad, FRAME *frameGame, LEVEL level, int ch){
+void padControl(PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level, int ch){
 
-    dummy_pad->velocity.x = padKeyBoardControl(dummy_pad, KEY_LEFT, KEY_RIGHT, ch);
-    padCollisionVerification(dummy_pad, level);
+    padChVelocity(dummy_pad, KEY_LEFT, KEY_RIGHT, ch);
+    padCollisionVerification(dummy_pad, frameGame);
     padDraw(dummy_pad, frameGame, PAD1H_BLOCK);    
 }
 int padKeyBoardControl(PADDLE* dummy_pad, int keyRegress, int keyAdvance, int ch){
@@ -58,4 +58,14 @@ int padKeyBoardControl(PADDLE* dummy_pad, int keyRegress, int keyAdvance, int ch
         return 1;
     else
         return 0;
+}
+void padChVelocity(PADDLE* dummy_pad, int keyRegress, int keyAdvance, int ch){
+    int velocity;
+    if(dummy_pad->vertical == FALSE){
+        dummy_pad->velocity.x = padKeyBoardControl(dummy_pad, KEY_LEFT, KEY_RIGHT, ch);
+            
+    }
+    else{
+        dummy_pad->velocity.y = padKeyBoardControl(dummy_pad, KEY_LEFT, KEY_RIGHT, ch);
+    }
 }

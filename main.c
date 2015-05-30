@@ -9,7 +9,7 @@ int main(){
     PADDLE pad = {.position.x = MAP_WIDTH/2, .position.y = MAP_HEIGHT-2, .velocity.x = 0, .velocity.y =0, .len = 15, .vertical = FALSE};
     LEVEL level = {.dificult = 1};
     FRAME frameGame = {.height = MAP_HEIGHT, .width = MAP_WIDTH};
-    loadMap(&level.map, map); 
+    loadMap(level.map, map); 
     cpMaptoFrame(&frameGame, level);
 
     configWindow();

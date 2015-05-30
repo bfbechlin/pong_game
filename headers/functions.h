@@ -16,6 +16,7 @@ void padCollisionVerification(PADDLE*, FRAME*);
 void padDraw(PADDLE*, FRAME*, int);
 void padControl(PADDLE*, FRAME*, LEVEL*, int);
 int padKeyBoardControl(PADDLE*, int, int, int);
+void padChVelocity(PADDLE*, int, int, int);
 
 // GRAPH
 void frameDraw(FRAME);

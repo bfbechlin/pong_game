@@ -24,6 +24,6 @@ void setCursor(int, int);
 void configWindow();
 
 // LEVEL
-void loadMap(int barrerTable[MAP_HEIGHT][MAP_WIDTH], char*);
+void loadMap(char barrerTable[MAP_HEIGHT][MAP_WIDTH], char*);
 void cpMaptoFrame(FRAME*, LEVEL);
 #endif

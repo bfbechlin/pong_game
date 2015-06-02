@@ -15,10 +15,10 @@ ball.o: ball.c
 paddle.o: paddle.c
 	$(CC) $(CFLAGS) paddle.c
 
-level.o:
+level.o:level.c
 	$(CC) $(CFLAGS) level.c
 	
-graph.o:
+graph.o:graph.c
 	$(CC) $(CFLAGS) graph.c
 
 clean:

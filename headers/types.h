@@ -31,7 +31,7 @@ typedef struct{
 }PADDLE;
 
 typedef struct{
-    int map[MAP_HEIGHT][MAP_WIDTH];
+    char map[MAP_HEIGHT][MAP_WIDTH];
     int dificult;
     int mode;
     int nPad;
@@ -39,7 +39,7 @@ typedef struct{
 }LEVEL;
 
 typedef struct{
-    int src[MAP_HEIGHT][MAP_WIDTH];
+    char src[MAP_HEIGHT][MAP_WIDTH];
     int width;
     int height;
 }FRAME;

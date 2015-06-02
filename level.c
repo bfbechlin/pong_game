@@ -1,6 +1,6 @@
 #include "./headers/header.h"
 
-void loadMap(int barrerTable[MAP_HEIGHT][MAP_WIDTH], char* fileName){
+void loadMap(char barrerTable[MAP_HEIGHT][MAP_WIDTH], char* fileName){
     FILE *file;
 	char c;
     int i, j;

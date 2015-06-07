@@ -7,31 +7,16 @@ void frameDraw(FRAME frame){
     for(i=0; i< MAP_HEIGHT; i++){
         for(j=0; j< MAP_WIDTH; j++){
             // PAREDES EXTENAS
-            if(frame.src[i][j] >= TOP_BLOCK && frame.src[i][j] <= CORNER_BLOCK){
-                attron(COLOR_PAIR(2));
-                addch(' ');
-                attroff(COLOR_PAIR(2));
-            }
-            else if(frame.src[i][j]  == BARRIER_BLOCK){
-                attron(COLOR_PAIR(3));
-                addch(' ');
-                attroff(COLOR_PAIR(3));
-            }
-            else if(frame.src[i][j]  == BALL_BLOCK){
-                attron(COLOR_PAIR(1));
-                addch('o');
-                attroff(COLOR_PAIR(1));
-            }
-            else if(frame.src[i][j]  == PAD1H_BLOCK){
-                attron(COLOR_PAIR(4));
-                addch(ACS_DIAMOND);
-                attroff(COLOR_PAIR(4));
-            }
-            else{ 
-                attron(COLOR_PAIR(1));
-                addch(' ');
-                attroff(COLOR_PAIR(1));
-            }
+            if(frame.src[i][j] >= TOP_BLOCK && frame.src[i][j] <= CORNER_BLOCK)
+                addChColor(' ', 2);
+            else if(frame.src[i][j]  == BARRIER_BLOCK)
+                addChColor(' ', 3);
+            else if(frame.src[i][j]  == BALL_BLOCK)
+                addChColor('o', 1);
+            else if(frame.src[i][j]  == PAD1H_BLOCK)
+                addChColor(ACS_DIAMOND, 4);
+            else
+                addChColor(' ', 1);
         }
         addch('\n');
     }   
@@ -56,4 +41,9 @@ void configWindow(){
     init_pair(4, COLOR_BLACK, COLOR_BLUE);
 
     attrset(COLOR_PAIR(1));
+}
+void addChColor(int ch, int colorPair){
+    attron(COLOR_PAIR(colorPair));
+    addch(ch);
+    attroff(COLOR_PAIR(colorPair));
 }

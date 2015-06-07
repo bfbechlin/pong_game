@@ -9,6 +9,7 @@ void ballControl(BALL*, PADDLE*,FRAME*, LEVEL*);
 void ballAttPos(BALL*);
 int ballCollisionVerification(BALL*, FRAME*);
 void ballDraw(BALL*, FRAME *);
+void ballAction(BALL*, PADDLE*, FRAME*, LEVEL*);
 
 // PADDLE
 void padAttPos(PADDLE*);
@@ -21,6 +22,7 @@ void padChVelocity(PADDLE*, int, int, int);
 // GRAPH
 void frameDraw(FRAME);
 void setCursor(int, int);
+void addChColor(int, int);
 void configWindow();
 
 // LEVEL

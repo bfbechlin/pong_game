@@ -5,7 +5,6 @@ void ballAttPos(BALL *dummy_ball){
     dummy_ball->position.y += dummy_ball->velocity.y;
 }
 int ballCollisionVerification(BALL *dummy_ball, FRAME *frameGame){
-    // FUNÇÃO DIFERENTE
     int row, col;
     row = dummy_ball->position.y + dummy_ball->velocity.y;
     col = dummy_ball->position.x + dummy_ball->velocity.x;
@@ -39,9 +38,8 @@ void ballDraw(BALL *dummy_ball, FRAME *frameGame){
     ballAttPos(dummy_ball); // Atualiza a posição da bola
     frameGame->src[dummy_ball->position.y][dummy_ball->position.x] = BALL_BLOCK;
 }
-void ballControl(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level){
-	// verifica colisoes
-    int block;
+void ballAction(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level){
+    int block; // Recebe a macro do pad, assim podendo identificar com qual ocorreu o choque
     switch(block = ballCollisionVerification(dummy_ball, frameGame)){
         case TOP_BLOCK:
         case BOT_BLOCK:
@@ -54,11 +52,13 @@ void ballControl(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *l
         case LEFT_BLOCK:
             dummy_ball->velocity.x *= -1;
             break;
+        // CHOQUES COM PADS HORIZONTAIS
         case PAD1H_BLOCK:
         case PAD2H_BLOCK:
             if((dummy_pad[block-1].velocity.x * -1) == dummy_ball->velocity.x)
                 dummy_ball->velocity.x *= -1; 
             break;
+        // CHOQUES COM PADS VERTICAIS
         case PAD1V_BLOCK:
         case PAD2V_BLOCK:
             if((dummy_pad[block-1].velocity.y*-1) == dummy_ball->velocity.y)
@@ -67,6 +67,14 @@ void ballControl(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *l
         default:
             break;
     }
-    // desenha e movimenta a bola
-    ballDraw(dummy_ball, frameGame);	
 }
+void ballControl(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level){
+	int i;
+    // LEVANDO ARRAY DE BOLAS
+    for(i = 0; i < level->nBall; i++){
+        ballAction(dummy_ball+i, dummy_pad, frameGame, level);
+        ballDraw(dummy_ball+i, frameGame);    
+    }
+}
+    
+

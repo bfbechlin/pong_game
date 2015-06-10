@@ -32,6 +32,7 @@ void loadMap(char barrerTable[MAP_HEIGHT][MAP_WIDTH], char* fileName){
     }
     fclose(file);
 }
+
 void cpMaptoFrame(FRAME *frameGame, LEVEL level){
     int i,j;
     for(i = 0; i < frameGame->height; i ++){
@@ -39,4 +40,10 @@ void cpMaptoFrame(FRAME *frameGame, LEVEL level){
             frameGame->src[i][j] = level.map[i][j];
         }
     }
+}
+
+void loadLevel(LEVEL *level){
+    char mapPath[12] = "maps/0.txt"; 
+    level->mapCode = randNumber(NMAPS);
+    loadMap(level->map, mapPath);
 }

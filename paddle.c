@@ -52,18 +52,20 @@ void padControl(PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level, int ch){
     padCollisionVerification(dummy_pad, frameGame);
     padDraw(dummy_pad, frameGame, PAD1H_BLOCK);    
 }
-int padKeyBoardControl(PADDLE* dummy_pad, int keyRegress, int keyAdvance, int ch){
-    if(ch == keyRegress)
+int padKeyBoardControl(PADDLE* dummy_pad, int regressKey, int advanceKey, int ch){
+    if(ch == regressKey)
         return -1;
-    else if(ch == keyAdvance)
+    else if(ch == advanceKey)
         return 1;
     else
         return 0;
 }
 void padChVelocity(PADDLE* dummy_pad, int keyRegress, int keyAdvance, int ch){
     int velocity;
-    if(dummy_pad->vertical == FALSE)
-        dummy_pad->velocity.x = padKeyBoardControl(dummy_pad, KEY_LEFT, KEY_RIGHT, ch);
-    else
-        dummy_pad->velocity.y = padKeyBoardControl(dummy_pad, KEY_LEFT, KEY_RIGHT, ch);
+    if(dummy_pad->botMode == FALSE){
+        if(dummy_pad->vertical == FALSE)
+            dummy_pad->velocity.x = padKeyBoardControl(dummy_pad, dummy_pad->advanceKey, dummy_pad->regressKey, ch);
+        else
+            dummy_pad->velocity.x = padKeyBoardControl(dummy_pad, dummy_pad->advanceKey, dummy_pad->regressKey, ch);
+    }
 }

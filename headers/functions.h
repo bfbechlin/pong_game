@@ -23,7 +23,6 @@ void padChVelocity(PADDLE*, int, int, int);
 
 // GRAPH
 void frameDraw(WINDOW*, FRAME);
-void setCursor(int, int);
 void configWindow();
 void printMenu(WINDOW*, int, char**, int);
 int configMenu();
@@ -40,10 +39,5 @@ void seedGen();
 BOOL randBinary(float);
 int randNumber(int);
 
-// RANMAR
-// ranmar = melhor gerador de números aleatórios
-// 	gera um número entre [0,1)
-void ranmar1_(float*); //  
-void rmarin_(int, int); // SEED 1, SEED 2
 
 #endif

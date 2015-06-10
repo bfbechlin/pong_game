@@ -22,6 +22,8 @@ int ballCollisionVerification(BALL *dummy_ball, FRAME *frameGame){
     // VERIFICANDO COLISÃO COM BARREIRAS E PADS
     if(frameGame->src[row][dummy_ball->position.x] >= PAD1H_BLOCK && frameGame->src[row][dummy_ball->position.x] <= BARRIER_BLOCK){
         dummy_ball->velocity.y *= -1;
+        if(frameGame->src[dummy_ball->position.y][col] >= PAD1H_BLOCK && frameGame->src[dummy_ball->position.y][col] <= BARRIER_BLOCK)
+            dummy_ball->velocity.x *= -1;
         return frameGame->src[row][dummy_ball->position.x];
     }
     // VERIFICANDO COLISÃO COM BARREIRAS E PADS

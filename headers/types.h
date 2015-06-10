@@ -29,6 +29,7 @@ typedef struct{
     COORD position;
     COORD velocity;
     unsigned int len;
+    char charCode;
     BOOL botMode;
     BOOL vertical;
     int advanceKey;

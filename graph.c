@@ -87,13 +87,13 @@ void frameDraw(WINDOW *localWin, FRAME frame){
             else if(frame.src[i][j]  == BALL_BLOCK)
                 waddchColor(localWin, 'o', 1);
             else if(frame.src[i][j]  == PAD1H_BLOCK)
-                waddchColor(localWin, ACS_DIAMOND, 4);
+                waddchColor(localWin, ACS_DIAMOND, 2);
             else if(frame.src[i][j]  == PAD2H_BLOCK)
-                waddchColor(localWin, ACS_DIAMOND, 2);
-            else if(frame.src[i][j]  == PAD1V_BLOCK)
                 waddchColor(localWin, ACS_DIAMOND, 4);
-            else if(frame.src[i][j]  == PAD2V_BLOCK)
+            else if(frame.src[i][j]  == PAD1V_BLOCK)
                 waddchColor(localWin, ACS_DIAMOND, 2);
+            else if(frame.src[i][j]  == PAD2V_BLOCK)
+                waddchColor(localWin, ACS_DIAMOND, 4);
             
             else
                 waddchColor(localWin, ' ', 1);
@@ -101,10 +101,6 @@ void frameDraw(WINDOW *localWin, FRAME frame){
         /* Ainda nao descobri o motivo, mas quando trabalhando com WINDOWS nao precisa inserir uma nova linha, ele parece fazer automatico */
         //waddch(localWin, '\n');
     }   
-}
-void setCursor(int y, int x){
-    //Movendo o cursor
-    move(y, x);
 }
 void configWindow(){
     initscr(); //inicializa ncurses

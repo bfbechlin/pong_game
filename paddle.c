@@ -50,7 +50,7 @@ void padControl(PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level, int ch){
 
     padChVelocity(dummy_pad, KEY_LEFT, KEY_RIGHT, ch);
     padCollisionVerification(dummy_pad, frameGame);
-    padDraw(dummy_pad, frameGame, PAD1H_BLOCK);    
+    padDraw(dummy_pad, frameGame, dummy_pad->charCode);    
 }
 int padKeyBoardControl(PADDLE* dummy_pad, int regressKey, int advanceKey, int ch){
     if(ch == regressKey)

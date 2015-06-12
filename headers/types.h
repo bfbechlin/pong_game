@@ -33,7 +33,7 @@ typedef struct{
     BOOL botMode;
     BOOL vertical;
     int advanceKey;
-    int regressKey; 
+    int regressKey;
 
 }PADDLE;
 
@@ -45,7 +45,8 @@ typedef struct{
     int mode;
     int nPad;
     int nBall;
-
+    int p1Score;
+    int p2Score;
 }LEVEL;
 
 typedef struct{
@@ -56,4 +57,7 @@ typedef struct{
 
 }FRAME;
 
+typedef struct{
+    int goals; 
+}PLAYER;
 #endif

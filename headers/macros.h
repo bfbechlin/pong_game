@@ -74,6 +74,10 @@
 // MODE
 #define PvsB 0
 #define PvsP 1
+// 4 pads
+#define PvsB4 2
+#define PvsP4 3
+
 // NÚMERO MÁXIMO DE BOLAS
 #define MAXBALL 5
 // NÚMERO DE MAPAS

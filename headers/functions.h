@@ -10,9 +10,8 @@ void ballAttPos(BALL*);
 int ballCollisionVerification(BALL*, FRAME*);
 void ballDraw(BALL*, FRAME *);
 void ballAction(BALL*, PADDLE*, FRAME*, LEVEL*);
-void ballAttArray(BALL *, LEVEL *);
 void ballAdd(BALL *, PADDLE *, LEVEL *);
-
+void ballDel(BALL *, FRAME *, LEVEL *);
 // PADDLE
 void padAttPos(PADDLE*);
 void padCollisionVerification(PADDLE*, FRAME*);

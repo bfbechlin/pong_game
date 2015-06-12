@@ -3,6 +3,8 @@
 void CPUinitGame(){
 	long unsigned int millis;
 	int ch;
+	BOOL att;
+
 	// LÓGICA
 	// Iniciando array de bolas.
 	BALL ball[MAXBALL];
@@ -13,14 +15,13 @@ void CPUinitGame(){
 		.velocity.y = 0, .len = 15, .charCode = PAD2H_BLOCK, .botMode = FALSE, .vertical = FALSE,
 		.advanceKey = KEY_LEFT, .regressKey = KEY_RIGHT}};
 	// Iniciando LEVEL
-	LEVEL level = {.dificult = 0, .mode = PvsB, .nPad = 2, .nBall =0};
+	LEVEL level = {.dificult = 0, .mode = PvsB, .nPad = 2, .nBall =0, .p1Score = 0, .p2Score = 0};
 	
 	// GRÁFICA
 	// Iniciando janelas
 	WINDOW *mainWin, *statsWin;
 	// Iniciando frame
 	FRAME frameGame = {.height = MAP_HEIGHT, .width = MAP_WIDTH};
-
 	// Gerando as seed para os números randomicos
 	seedGen(); 
 	// Certificando-se que estarão desativadas.
@@ -36,22 +37,30 @@ void CPUinitGame(){
 	millis = 0;
 	padControl(&pad[0], &frameGame, &level, ch);
 	while(ch != ESC){ // Enquanto a tecla ESC nao for pressionada
+        att = FALSE;
         if(millis % 20 == 0){
             ch = getch();
             padControl(&pad[1], &frameGame, &level, ch);
+            att = TRUE;
         }
-        if(millis % 45 == 0)
+        if(millis % 45 == 0){
             ballControl(ball, pad, &frameGame, &level);
-        if(millis % 3000 == 0){ // Adding ball
-        	if(level.nBall < MAXBALL)
-        		ballAdd(ball, pad, &level);
+        	att = TRUE;
         }
-        frameDraw(mainWin, frameGame);
-        box(mainWin, 0, 0);
-        wrefresh(mainWin); // atualiza a tela principal  
-        mvwprintw(statsWin, STATSW_HEIGHT/2, (STATSW_WIDTH-13)/2, "INFO DO JOGO!"); // Escreve algumas informacoes na janela de stats 
-        box(statsWin, 0, 0);
-        wrefresh(statsWin);
+        if(millis % 3000 == 0){ // Adding ball
+        	if(level.nBall < MAXBALL){
+        		ballAdd(ball, pad, &level);
+        		att = TRUE;
+        	}
+        }
+        if(att == TRUE){
+        	frameDraw(mainWin, frameGame);
+        	box(mainWin, 0, 0);
+        	wrefresh(mainWin); // atualiza a tela principal  
+        	mvwprintw(statsWin, STATSW_HEIGHT/2, (STATSW_WIDTH-13)/2, "PLACAR: %d X %d", level.p1Score, level.p2Score); // Escreve algumas informacoes na janela de stats 
+       		box(statsWin, 0, 0);
+        	wrefresh(statsWin);
+        }
    	    usleep(1000); //1 millisegundo
         millis ++;
     }

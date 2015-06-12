@@ -1,7 +1,7 @@
 #include "./headers/header.h"
 
 void CPUinitGame(){
-	long unsigned int millis;
+	long unsigned int millis, segunds;
 	int ch;
 	BOOL att;
 
@@ -22,6 +22,7 @@ void CPUinitGame(){
 	WINDOW *mainWin, *statsWin;
 	// Iniciando frame
 	FRAME frameGame = {.height = MAP_HEIGHT, .width = MAP_WIDTH};
+	FRAME frameStats = {.height = STATSW_HEIGHT, .width = STATSW_WIDTH};
 	// Gerando as seed para os números randomicos
 	seedGen(); 
 	// Certificando-se que estarão desativadas.
@@ -29,12 +30,15 @@ void CPUinitGame(){
 	// Sorteando e carregando mapa.
 	loadLevel(&level);
 
+
 	cpMaptoFrame(&frameGame, level);
+	loadStatsFrame(&frameStats, "maps/stats.frame");
 	// Cria as duas janelas de jogo 
     mainWin = create_newwin(MAINW_HEIGHT, MAINW_WIDTH, MAINW_POSY, MAINW_POSX);
     statsWin = create_newwin(STATSW_HEIGHT, STATSW_WIDTH, STATSW_POSY, STATSW_POSX);
 
 	millis = 0;
+	segunds = 0;
 	padControl(&pad[0], &frameGame, &level, ch);
 	while(ch != ESC){ // Enquanto a tecla ESC nao for pressionada
         att = FALSE;
@@ -43,7 +47,7 @@ void CPUinitGame(){
             padControl(&pad[1], &frameGame, &level, ch);
             att = TRUE;
         }
-        if(millis % 45 == 0){
+        if(millis % 55 == 0){
             ballControl(ball, pad, &frameGame, &level);
         	att = TRUE;
         }
@@ -57,12 +61,14 @@ void CPUinitGame(){
         	frameDraw(mainWin, frameGame);
         	box(mainWin, 0, 0);
         	wrefresh(mainWin); // atualiza a tela principal  
-        	mvwprintw(statsWin, STATSW_HEIGHT/2, (STATSW_WIDTH-13)/2, "PLACAR: %d X %d", level.p1Score, level.p2Score); // Escreve algumas informacoes na janela de stats 
-       		box(statsWin, 0, 0);
+
+        	statsFrameDraw(statsWin, frameStats);
         	wrefresh(statsWin);
         }
    	    usleep(1000); //1 millisegundo
         millis ++;
+        if(millis % 1000 == 0)
+        	segunds ++;
     }
     endwin();
 }

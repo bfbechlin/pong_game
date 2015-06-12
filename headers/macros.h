@@ -82,6 +82,7 @@
 #define MAXBALL 5
 // NÚMERO DE MAPAS
 #define NMAPS 5
+
 // TECLAS
 #define ESC 27
 #define ENTER 10

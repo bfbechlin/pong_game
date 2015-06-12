@@ -12,6 +12,7 @@ void ballDraw(BALL*, FRAME *);
 void ballAction(BALL*, PADDLE*, FRAME*, LEVEL*);
 void ballAdd(BALL *, PADDLE *, LEVEL *);
 void ballDel(BALL *, FRAME *, LEVEL *);
+
 // PADDLE
 void padAttPos(PADDLE*);
 void padCollisionVerification(PADDLE*, FRAME*);
@@ -27,6 +28,9 @@ void printMenu(WINDOW*, int, char**, int);
 int configMenu();
 WINDOW *create_newwin(int, int, int, int);
 void waddchColor(WINDOW*, int, int);
+
+void statsFrameDraw(WINDOW *, FRAME);
+void loadStatsFrame(FRAME *, char *);
 
 // LEVEL
 void loadMap(char barrerTable[MAP_HEIGHT][MAP_WIDTH], char*);

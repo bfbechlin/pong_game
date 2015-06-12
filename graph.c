@@ -102,6 +102,48 @@ void frameDraw(WINDOW *localWin, FRAME frame){
         //waddch(localWin, '\n');
     }   
 }
+void statsFrameDraw(WINDOW *localWin, FRAME frame){
+    int i, j;
+    
+    wmove(localWin, 0, 0);
+    for(i = 0; i < frame.height; i++){
+        for(j = 0; j< frame.width; j++){
+            if(frame.src[i][j] == '_')
+                waddchColor(localWin, ' ', 1);
+            else if(frame.src[i][j] == '(')
+                waddchColor(localWin, ACS_ULCORNER, 1);
+            else if(frame.src[i][j] == '{')
+                waddchColor(localWin, ACS_LLCORNER, 1);
+            else if(frame.src[i][j] == ')')
+                waddchColor(localWin, ACS_URCORNER, 1);
+            else if(frame.src[i][j] == '}')
+                waddchColor(localWin, ACS_LRCORNER, 1);
+            else if(frame.src[i][j] == '-')
+                waddchColor(localWin, ACS_HLINE, 1);
+            else if(frame.src[i][j] == '|')
+                waddchColor(localWin, ACS_VLINE, 1);
+            else if(frame.src[i][j] == '^')
+                waddchColor(localWin, ' ', 3);
+            else
+                waddchColor(localWin, frame.src[i][j], 1);
+        }
+    }
+}
+void loadStatsFrame(FRAME *frame, char *fileName){
+    FILE *file;
+    char c;
+    int i, j;
+    // width + 1 pois deve se ler o caracter \n em todas as linhas
+    file = fopen(fileName, "r");
+    for(i = 0; i < frame->height; i ++){
+        for(j = 0; j < frame->width + 1; j ++){
+            c = fgetc(file);
+            if(c != '\n')
+                frame->src[i][j] = c;
+        }
+    }
+    fclose(file);
+}
 void configWindow(){
     initscr(); //inicializa ncurses
     curs_set(FALSE); //oculta o cursor do terminal

@@ -1,9 +1,37 @@
 #include "./headers/header.h"
 
+// TODAS FUNÇÕES LIDAM COM APENAS UM PAD
+
+/*
+    ARG = ponteiro para UM pad, ponteiro para UM frame, ponteiro para UM level, UM caracter
+    RET/MOD = sem modificações
+    Controla o que deve ser realizado com pad, ou seja, testa se a tecla presionada é uma
+        tecla que produz ação, realiza a verificação de colisão e desenha o pad no frame.
+*/
+void padControl(PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level, int ch){
+    // Chama a função que realiza a troca na velocidade do pad
+    padChVelocity(dummy_pad, KEY_LEFT, KEY_RIGHT, ch);
+    // Chama a função que realiza verificação de choques
+    padCollisionVerification(dummy_pad, frameGame);
+    // Chama a função que escreve o pad no frame
+    padDraw(dummy_pad, frameGame, dummy_pad->charCode);    
+}
+
+/*
+    ARG = ponteiro para UM pad
+    RET/MOD = modifica as propriedades do pad
+    Atualiza a posição do pad usando as velocidades correntes
+*/
 void padAttPos(PADDLE *dummy_pad){
     dummy_pad->position.x += dummy_pad->velocity.x;
     dummy_pad->position.y += dummy_pad->velocity.y;
 }
+
+/*
+    ARG = ponteiro para UM pad
+    RET/MOD = modifica as propriedades do pad
+    Atualiza a posição do pad usando as velocidades correntes
+*/
 void padCollisionVerification(PADDLE *dummy_pad, FRAME *frameGame){
     int row, col;
     row = dummy_pad->position.y + dummy_pad->velocity.y;
@@ -46,12 +74,7 @@ void padDraw(PADDLE *dummy_pad, FRAME *frameGame, int charCode){
             frameGame->src[dummy_pad->position.y + i][dummy_pad ->position.x] = charCode;
     }
 }
-void padControl(PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level, int ch){
 
-    padChVelocity(dummy_pad, KEY_LEFT, KEY_RIGHT, ch);
-    padCollisionVerification(dummy_pad, frameGame);
-    padDraw(dummy_pad, frameGame, dummy_pad->charCode);    
-}
 int padKeyBoardControl(PADDLE* dummy_pad, int regressKey, int advanceKey, int ch){
     if(ch == regressKey)
         return -1;

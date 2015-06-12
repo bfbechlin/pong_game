@@ -1,12 +1,106 @@
 #include "./headers/header.h"
 
+// FUNÇÕES QUE LIDAM COM TODAS AS BOLAS
+
 /*
-    ARG = ponteiro para UMA bola
-    Atualiza posição da bola recebida.
+    ARG = ponteiro para VETOR bola
+    RET/MOD = modifica a propriedade das bolas
+    Deixa todas as bolas desativadas usado para início da fase
 */
-void ballAttPos(BALL *dummy_ball){
-    dummy_ball->position.x += dummy_ball->velocity.x;
-    dummy_ball->position.y += dummy_ball->velocity.y;
+void ballNewLevel(BALL *dummy_ball){
+    int i;
+    // Iniciando sem nenhuma bola
+    for(i =0; i < MAXBALL; i++){
+        dummy_ball[i].enabled = FALSE;
+    }
+}
+
+/*
+    ARG = ponteiro para VETOR bola, ponteiro para VETOR pads, ponteiro para UM frame,
+        ponteiro para UM level 
+    RET /
+    Realiza controle de TODAS as bolas, atualizando somente as que estão ativas.
+*/
+void ballControl(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level){
+    int i;
+    // Enviando o array de bolas
+    for(i = 0; i < MAXBALL; i++){
+        if(dummy_ball[i].enabled == TRUE){
+            ballAction(&dummy_ball[i], dummy_pad, frameGame, level);
+            ballDraw(&dummy_ball[i], frameGame);
+        }   
+    }
+}
+
+/*
+    ARG = ponteiro para VETOR bola, ponteiro para VETOR pads, ponteiro para UM level 
+    Adiciona uma bola no array no indice mais próxima do zero e que esteja desativada. 
+    A posição dessa bola é em cima de algum dos pads, aleatório, e sua direção também
+        é aletória.
+*/
+void ballAdd(BALL *dummy_ball, PADDLE *dummy_pad, LEVEL *level){
+    int index, i;
+    BOOL found;  
+    BALL ball;
+    // Definindo velocidades aleatóriamente como 1 e -1
+    ball.velocity.x = randBinary(0.5)*2 - 1;
+    ball.velocity.y = randBinary(0.5)*2 - 1;
+    // Ativando a bola
+    ball.enabled = TRUE;
+    // Definindo posição inicial através das posições dos pads
+    switch(index = randNumber(level->nPad)){
+        //PAD SUPERIOR
+        case 1:
+            ball.position.y = dummy_pad[index - 1].position.y + 1;
+            ball.position.x = dummy_pad[index - 1].position.x + dummy_pad[index - 1].len/2;
+            ball.velocity.y = 1;
+            break;
+        //PAD INFERIOR
+        case 2:
+            ball.position.y = dummy_pad[index - 1].position.y - 1;
+            ball.position.x = dummy_pad[index - 1].position.x + dummy_pad[index - 1].len/2;
+            ball.velocity.y = -1;
+            break;
+        //PAD LATERAL DIREITO
+        case 3:
+            ball.position.x = dummy_pad[index - 1].position.x + 1;
+            ball.position.y = dummy_pad[index - 1].position.y + dummy_pad[index - 1].len/2;
+            ball.velocity.x = 1;
+            break;
+        //PAD LATERAL ESQUERDO
+        case 4:
+            ball.position.x = dummy_pad[index - 1].position.x - 1;
+            ball.position.y = dummy_pad[index - 1].position.y + dummy_pad[index - 1].len/2;
+            ball.velocity.x = -1;
+            break;
+    }
+    
+    // Adicionando bola na próxima posição disponível
+    i = 0;
+    do{
+        if(dummy_ball[i].enabled == FALSE){
+            // Copiando a struct da bola local para as bolas do jogo
+            dummy_ball[i] = ball;
+            level->nBall += 1;
+            found = TRUE;
+        }
+        i++;
+    }while(found == FALSE && i < MAXBALL);
+}
+
+// FUNÇÕES QUE LIDAM SOMENTE COM UMA BOLA
+
+/*
+    ARG = ponteiro para UMA bola, ponteiro para UM frame, ponteiro para UM level 
+    Delata já apaga a bola recebida da tela
+*/
+void ballDel(BALL *dummy_ball, FRAME *frameGame, LEVEL *level){
+    // Desativa bola
+    dummy_ball->enabled = FALSE;
+    // Apagando a bola da tela
+    frameGame->src[dummy_ball->position.y][dummy_ball->position.x] = VOID_BLOCK;
+    // Diminuindo a quantidade de bolas ativas
+    level->nBall += -1;
 }
 
 /*
@@ -43,22 +137,6 @@ int ballCollisionVerification(BALL *dummy_ball, FRAME *frameGame){
         dummy_ball->velocity.y *= -1;
         dummy_ball->velocity.x *= -1;
         return FALSE;
-    }
-}
-
-/*
-    ARG = ponteiro para UMA bola, ponteiro para UM frame
-    Edita o frame com as novas posições das bolas, sendo necessário ter verificado as colisões
-        e atualizado as velocidades da bola.
-*/
-void ballDraw(BALL *dummy_ball, FRAME *frameGame){
-    if(dummy_ball->enabled == TRUE){
-        // Apaga a posição onde a bola se encontrava anteriormente
-        frameGame->src[dummy_ball->position.y][dummy_ball->position.x] = VOID_BLOCK;
-        // Atualiza a posição da bola
-        ballAttPos(dummy_ball); 
-        // Desenha novamente a bola em sua nova posição
-        frameGame->src[dummy_ball->position.y][dummy_ball->position.x] = BALL_BLOCK;
     }
 }
 
@@ -104,86 +182,29 @@ void ballAction(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *le
 }
 
 /*
-    ARG = ponteiro para VETOR bola, ponteiro para VETOR pads, ponteiro para UM frame,
-        ponteiro para UM level 
-    Realiza controle de TODAS as bolas, atualizando somente as que estão ativas.
+    ARG = ponteiro para UMA bola
+    Atualiza posição da bola recebida.
 */
-void ballControl(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level){
-	int i;
-    // LEVANDO ARRAY DE BOLAS
-    for(i = 0; i < MAXBALL; i++){
-        if(dummy_ball[i].enabled == TRUE){
-            ballAction(&dummy_ball[i], dummy_pad, frameGame, level);
-            ballDraw(&dummy_ball[i], frameGame);
-        }   
-    }
+void ballAttPos(BALL *dummy_ball){
+    dummy_ball->position.x += dummy_ball->velocity.x;
+    dummy_ball->position.y += dummy_ball->velocity.y;
 }
 
-void ballAdd(BALL *dummy_ball, PADDLE *dummy_pad, LEVEL *level){
-    int index, i;
-    BOOL found;  
-    BALL ball;
-    // Definindo velocidades aleatóriamente como 1 e -1
-    ball.velocity.x = randBinary(0.5)*2 - 1;
-    ball.velocity.y = randBinary(0.5)*2 - 1;
-    // Ativando a bola
-    ball.enabled = TRUE;
-    // Definindo posição inicial através das posições dos pads
-    switch(index = randNumber(level->nPad)){
-        //PAD SUPERIOR
-        case 1:
-            ball.position.y = dummy_pad[index - 1].position.y + 1;
-            ball.position.x = dummy_pad[index - 1].position.x + dummy_pad[index - 1].len/2;
-            ball.velocity.y = 1;
-            break;
-        //PAD INFERIOR
-        case 2:
-            ball.position.y = dummy_pad[index - 1].position.y - 1;
-            ball.position.x = dummy_pad[index - 1].position.x + dummy_pad[index - 1].len/2;
-            ball.velocity.y = -1;
-            break;
-        //PAD LATERAL DIREITO
-        case 3:
-            ball.position.x = dummy_pad[index - 1].position.x + 1;
-            ball.position.y = dummy_pad[index - 1].position.y + dummy_pad[index - 1].len/2;
-            ball.velocity.x = 1;
-            break;
-        //PAD LATERAL ESQUERDO
-        case 4:
-            ball.position.x = dummy_pad[index - 1].position.x - 1;
-            ball.position.y = dummy_pad[index - 1].position.y + dummy_pad[index - 1].len/2;
-            ball.velocity.x = -1;
-            break;
-    }
-    
-    // Adicionando bola na próxima posição disponível
-    i = 0;
-    do{
-        if(dummy_ball[i].enabled == FALSE){
-            dummy_ball[i] = ball;
-            level->nBall += 1;
-            found = TRUE;
-        }
-        i++;
-    }while(found == FALSE && i < MAXBALL);
-}
 /*
-    ARG = UMA BOLA
-    Delata a bola
+    ARG = ponteiro para UMA bola, ponteiro para UM frame
+    Edita o frame com as novas posições das bolas, sendo necessário ter verificado as colisões
+        e atualizado as velocidades da bola.
 */
-void ballDel(BALL *dummy_ball, FRAME *frameGame, LEVEL *level){
-    // Desativa bola
-    dummy_ball->enabled = FALSE;
-    // Apagando a bola da tela
-    frameGame->src[dummy_ball->position.y][dummy_ball->position.x] = VOID_BLOCK;
-    // Diminuindo a quantidade de bolas ativas
-    level->nBall += -1;
-}
-
-void ballNewLevel(BALL *dummy_ball){
-    int i;
-    // Iniciando sem nenhuma bola
-    for(i =0; i < MAXBALL; i++){
-        dummy_ball[i].enabled = FALSE;
+void ballDraw(BALL *dummy_ball, FRAME *frameGame){
+    if(dummy_ball->enabled == TRUE){
+        // Apaga a posição onde a bola se encontrava anteriormente
+        frameGame->src[dummy_ball->position.y][dummy_ball->position.x] = VOID_BLOCK;
+        // Atualiza a posição da bola
+        ballAttPos(dummy_ball); 
+        // Desenha novamente a bola em sua nova posição
+        frameGame->src[dummy_ball->position.y][dummy_ball->position.x] = BALL_BLOCK;
     }
 }
+
+
+

@@ -33,11 +33,11 @@ void loadMap(char barrerTable[MAP_HEIGHT][MAP_WIDTH], char* fileName){
     fclose(file);
 }
 
-void cpMaptoFrame(FRAME *frameGame, LEVEL level){
+void cpMaptoFrame(FRAME *frame, LEVEL level){
     int i,j;
-    for(i = 0; i < frameGame->height; i ++){
-        for(j = 0; j < frameGame->width; j ++){
-            frameGame->src[i][j] = level.map[i][j];
+    for(i = 0; i < frame->height; i ++){
+        for(j = 0; j < frame->width; j ++){
+            frame->src[i][j] = level.map[i][j];
         }
     }
 }

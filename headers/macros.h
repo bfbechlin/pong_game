@@ -11,8 +11,8 @@
 	Como também sua posição e algumas outras informações relacionadas.
 */
 // WINDOW SIZE
-#define WIDTH 82
-#define HEIGHT 42
+#define SCREEN_WIDTH 122
+#define SCREEN_HEIGHT 42
 
 // MAIN WINDOW INFO
 #define MAINW_WIDTH 82
@@ -82,6 +82,9 @@
 #define MAXBALL 5
 // NÚMERO DE MAPAS
 #define NMAPS 5
+
+// ASCII CODES
+#define SHIFTNUM 48
 
 // TECLAS
 #define ESC 27

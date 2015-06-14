@@ -1,15 +1,14 @@
 #include "./headers/header.h"
 
-int configMenu(){
-    WINDOW *menuWin;
+int configMenu(WINDOW *menuWin){
     int selected=1;
     int choice=0;
     int c;
     int menuPosX, menuPosY;
 
     char *opt[] = {
-        "vs CPU",
-        "vs P2",
+        "Player vs CPU",
+        "Two Players",
         "Recorde",
         "Sair"
     };
@@ -18,7 +17,6 @@ int configMenu(){
     menuPosX = (COLS - MENU_WIDTH)/2;
     menuPosY = (LINES - MENU_HEIGHT)/2;
 
-    menuWin = newwin(MENU_HEIGHT, MENU_WIDTH, menuPosY, menuPosX);
     keypad(menuWin, TRUE);
     printMenu(menuWin, selected, opt, numOpt);
     while(choice==0){
@@ -69,31 +67,43 @@ WINDOW *create_newwin(int height, int width, int starty, int startx){
 
     return localWin;
 }
-void frameDraw(WINDOW *localWin, FRAME frame){
+
+/*
+    Algum problema!!!
+*/
+FRAME *create_newframe(int wid, int hei){
+    FRAME *localFrame;
+
+    localFrame->width = wid;
+    localFrame->height = hei;
+    
+    return localFrame;
+}
+
+void gameFrameDraw(WINDOW *localWin, FRAME *frame){
     int i, j;
     
     /* A funcao setCursor parece ser meio redundante ja que a funcao move faz exatamente a mesma coisa 
        Se for por clareza do codigo, daria para modificar a setCursor para setWinCursor e passar junto das cordenadas
        uma WINDOW */
-    //setCursor(0, 0);
     wmove(localWin, 0, 0);
     for(i=0; i< MAP_HEIGHT; i++){
         for(j=0; j< MAP_WIDTH; j++){
             // PAREDES EXTENAS
-            if(frame.src[i][j] >= TOP_BLOCK && frame.src[i][j] <= CORNER_BLOCK)
+            if(frame->src[i][j] >= TOP_BLOCK && frame->src[i][j] <= CORNER_BLOCK)
                 waddchColor(localWin, ' ', 2);
-            else if(frame.src[i][j]  == BARRIER_BLOCK)
-                waddchColor(localWin, ' ', 3);
-            else if(frame.src[i][j]  == BALL_BLOCK)
+            else if(frame->src[i][j]  == BARRIER_BLOCK)
+                waddchColor(localWin, ' ', 4);
+            else if(frame->src[i][j]  == BALL_BLOCK)
                 waddchColor(localWin, 'o', 1);
-            else if(frame.src[i][j]  == PAD1H_BLOCK)
+            else if(frame->src[i][j]  == PAD1H_BLOCK)
                 waddchColor(localWin, ACS_DIAMOND, 2);
-            else if(frame.src[i][j]  == PAD2H_BLOCK)
-                waddchColor(localWin, ACS_DIAMOND, 4);
-            else if(frame.src[i][j]  == PAD1V_BLOCK)
+            else if(frame->src[i][j]  == PAD2H_BLOCK)
+                waddchColor(localWin, ACS_DIAMOND, 3);
+            else if(frame->src[i][j]  == PAD1V_BLOCK)
                 waddchColor(localWin, ACS_DIAMOND, 2);
-            else if(frame.src[i][j]  == PAD2V_BLOCK)
-                waddchColor(localWin, ACS_DIAMOND, 4);
+            else if(frame->src[i][j]  == PAD2V_BLOCK)
+                waddchColor(localWin, ACS_DIAMOND, 3);
             
             else
                 waddchColor(localWin, ' ', 1);
@@ -102,34 +112,47 @@ void frameDraw(WINDOW *localWin, FRAME frame){
         //waddch(localWin, '\n');
     }   
 }
-void statsFrameDraw(WINDOW *localWin, FRAME frame){
+/*
+    ARG = ponteiro para window, ponteiro para frame, ponteiro para frame
+        Escreve o frame na tela com com a cor definido pelo Frame color.
+*/
+
+void statsFrameDraw(WINDOW *localWin, FRAME *frame, FRAME *frameColor){
     int i, j;
     
     wmove(localWin, 0, 0);
-    for(i = 0; i < frame.height; i++){
-        for(j = 0; j< frame.width; j++){
-            if(frame.src[i][j] == '_')
+    for(i = 0; i < frame->height; i++){
+        for(j = 0; j< frame->width; j++){
+            if(frame->src[i][j] == '_')
                 waddchColor(localWin, ' ', 1);
-            else if(frame.src[i][j] == '(')
+            else if(frame->src[i][j] == '(')
                 waddchColor(localWin, ACS_ULCORNER, 1);
-            else if(frame.src[i][j] == '{')
+            else if(frame->src[i][j] == '{')
                 waddchColor(localWin, ACS_LLCORNER, 1);
-            else if(frame.src[i][j] == ')')
+            else if(frame->src[i][j] == ')')
                 waddchColor(localWin, ACS_URCORNER, 1);
-            else if(frame.src[i][j] == '}')
+            else if(frame->src[i][j] == '}')
                 waddchColor(localWin, ACS_LRCORNER, 1);
-            else if(frame.src[i][j] == '-')
+            else if(frame->src[i][j] == '-')
                 waddchColor(localWin, ACS_HLINE, 1);
-            else if(frame.src[i][j] == '|')
+            else if(frame->src[i][j] == '|')
                 waddchColor(localWin, ACS_VLINE, 1);
-            else if(frame.src[i][j] == '^')
-                waddchColor(localWin, ' ', 3);
+            else if(frame->src[i][j] == '^')
+                waddchColor(localWin, ' ', 2);
+            else if(frame->src[i][j] == '&')
+                waddchColor(localWin, ' ', frameColor->src[i][j] - '0');
+            else if(frame->src[i][j] == '#')
+                waddchColor(localWin, ACS_HLINE, frameColor->src[i][j] - '0');
             else
-                waddchColor(localWin, frame.src[i][j], 1);
+                waddchColor(localWin, frame->src[i][j], frameColor->src[i][j] - '0');
         }
     }
 }
-void loadStatsFrame(FRAME *frame, char *fileName){
+void testeBallTime(FRAME *frame, int newBallTime){
+    if(newBallTime > 0)
+        frameAddNumber(frame, newBallTime, 2, 22, 33);
+}
+void frameLoad(FRAME *frame, char *fileName){
     FILE *file;
     char c;
     int i, j;
@@ -144,6 +167,13 @@ void loadStatsFrame(FRAME *frame, char *fileName){
     }
     fclose(file);
 }
+
+/*
+    ARG = SEM
+    Inicializa ncurses e configura todos padrãos que serão usados em todo o resto da
+        execução tais como cores, não imprimir os caracters na tela getch não inter-
+        romper execução ...
+*/
 void configWindow(){
     initscr(); //inicializa ncurses
     curs_set(FALSE); //oculta o cursor do terminal
@@ -154,15 +184,77 @@ void configWindow(){
     start_color(); //inicia terminal com cores
     keypad(stdscr, TRUE); //habilita setas direcionais e outras teclas de controle
 
-    init_pair(1, COLOR_WHITE, COLOR_BLACK);
-    init_pair(2, COLOR_BLACK, COLOR_GREEN); 
-    init_pair(3, COLOR_GREEN, COLOR_RED);
-    init_pair(4, COLOR_BLACK, COLOR_BLUE);
+    init_pair(1, COLOR_WHITE, COLOR_BLACK); // Cor padrão
+    init_pair(2, COLOR_WHITE, COLOR_GREEN); // Cor pad 1
+    init_pair(3, COLOR_WHITE, COLOR_BLUE); // Cor pad 2
+    init_pair(4, COLOR_GREEN, COLOR_RED); // Cor BARRER
+    init_pair(5, COLOR_RED, COLOR_GREEN); // Cor Oposto BARRER
+    init_pair(6, COLOR_RED, COLOR_BLACK);
+    init_pair(7, COLOR_GREEN, COLOR_BLACK);
+    init_pair(8, COLOR_BLUE, COLOR_BLACK);
+    init_pair(9, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(10, COLOR_CYAN, COLOR_BLACK);
+    init_pair(11, COLOR_BLACK, COLOR_CYAN);
 
     attrset(COLOR_PAIR(1));
 }
-void waddchColor(WINDOW *localWin,int ch, int colorPair){
+
+/*
+    ARG = pointeiro para window, int caracter, int par de cor
+    Escreve determinado caracter na janela com a cor determinada
+        pelo argumento.
+*/
+void waddchColor(WINDOW *localWin, int ch, int colorPair){
     wattron(localWin, COLOR_PAIR(colorPair));
     waddch(localWin, ch);
     wattroff(localWin, COLOR_PAIR(colorPair));
+}
+
+/*
+    ARG = pointeiro para frame, int número que será colocado, int linha do frame,
+        int coluna do frame, int quadrados
+    Escreve um número no frame, ainda especificando em quandos elementos da matriz
+        o número será colocado. Ex.: 12, usando 3 squares -> 0 1 2.
+*/
+void frameAddNumber(FRAME *frame, int number, int squares, int line, int colum){
+    int i, exp10;
+    exp10 = 10;
+    frame->src[line][colum + --squares] = number%10 + SHIFTNUM;
+    for(i = squares -1; i >= 0 ; i--){
+        frame->src[line][colum+i] = number/exp10 + SHIFTNUM;
+        exp10 *= 10;
+    }
+}
+
+/*
+    ARG = pointeiro para frame, ponteiro de char que é a palavra, int linha do 
+        frame, int coluna do frame
+    Escreve uma palavra no frame, quebrando a linha se necessário
+*/
+void frameAddString(FRAME *frame, char *String, int line, int colum){
+    int i, j, lineLen, StringLen;
+    j = line;
+    lineLen = frame->width;
+    StringLen = strlen(String);
+    for(i = 0; i < StringLen; i++){
+        if(colum+i == lineLen)
+            j++;
+        frame->src[j][(colum+i)%lineLen] = String[i];
+    }
+}
+
+/*
+    ARG = pointeiro para frame, int número do par de cores, int quadrados, int linha do 
+        frame, int coluna do frame
+    Troca a cor do quadrado corrente do quadrado.
+*/
+void frameAddColor(FRAME *frame, int colorPair, int squares, int line, int colum){
+    int i, j, lineLen;
+    j = line;
+    lineLen = frame->width;
+    for(i = 0; i < squares; i++){
+        if(colum+i == lineLen)
+            j++;
+        frame->src[j][(colum+i)%lineLen] = colorPair;
+    }
 }

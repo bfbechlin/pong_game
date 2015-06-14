@@ -22,15 +22,20 @@ int padKeyBoardControl(PADDLE*, int, int, int);
 void padChVelocity(PADDLE*, int, int, int);
 
 // GRAPH
-void frameDraw(WINDOW*, FRAME);
+void gameFrameDraw(WINDOW*, FRAME*);
 void configWindow();
 void printMenu(WINDOW*, int, char**, int);
-int configMenu();
+int configMenu(WINDOW*);
 WINDOW *create_newwin(int, int, int, int);
 void waddchColor(WINDOW*, int, int);
 
-void statsFrameDraw(WINDOW *, FRAME);
-void loadStatsFrame(FRAME *, char *);
+void testeBallTime(FRAME *, int);
+void statsFrameDraw(WINDOW *, FRAME*, FRAME*);
+/* FRAME*/
+FRAME* create_newframe(int, int);
+void frameLoad(FRAME *, char *);
+void frameAddNumber(FRAME *, int, int, int, int);
+void frameAddString(FRAME *, char *, int, int);
 
 // LEVEL
 void loadMap(char barrerTable[MAP_HEIGHT][MAP_WIDTH], char*);

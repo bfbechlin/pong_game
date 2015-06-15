@@ -20,6 +20,13 @@ void padControl(PADDLE*, FRAME*, LEVEL*, int);
 int padKeyBoardControl(PADDLE*, int, int, int);
 void padChVelocity(PADDLE*, int, int, int);
 
+//BOT
+int countReturningBalls(BALL *, LEVEL *);
+void testBallsDirection(BALL *, BALL *, LEVEL *);
+BALL testBallDistance(BALL *, int , PADDLE *);
+void botDecisionControl(PADDLE *, BALL *, LEVEL *);
+void controlBotPaddle(PADDLE *, BALL *,  FRAME *, LEVEL *);
+
 // GRAPH
 void frameDraw(WINDOW*, FRAME);
 void configWindow();

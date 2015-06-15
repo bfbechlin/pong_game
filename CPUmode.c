@@ -39,6 +39,10 @@ void CPUinitGame(){
 	while(ch != ESC){ // Enquanto a tecla ESC nao for pressionada
         att = FALSE;
         if(millis % 20 == 0){
+            controlBotPaddle(&pad[0], ball, &frameGame, &level);
+            att = TRUE;
+        }
+        if(millis % 20 == 0){
             ch = getch();
             padControl(&pad[1], &frameGame, &level, ch);
             att = TRUE;

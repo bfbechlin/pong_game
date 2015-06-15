@@ -83,7 +83,10 @@
 // NÚMERO DE MAPAS
 #define NMAPS 5
 
-// ASCII CODES
+// VELOCIDADES
+#define BALL_VEL 90
+
+// ASCII
 #define SHIFTNUM 48
 
 // TECLAS

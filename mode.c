@@ -27,7 +27,7 @@ void CPUinitGame(){
 		.advanceKey = KEY_LEFT, .regressKey = KEY_RIGHT}
 		};
 	// Iniciando LEVEL
-	LEVEL level = {.dificult = 0, .mode = PvsB, .nPad = 2, .nBall =0, .newBallTime = 60,
+	LEVEL level = {.dificult = 0, .mode = PvsB, .nPad = 2, .nBall =0, .newBallTime = 30,
 		.newBallCurrentTime = 3, .p1Score = 5, .p2Score = 5};
 	
 	// Gerando as seed para os números randomicos
@@ -71,7 +71,7 @@ void CPUinitGame(){
             padControl(&pad[0], &frameGame, &level, ch);
             attGame = TRUE;
         }
-        if(millis % 55 == 0){
+        if(millis % BALL_VEL == 0){
             ballControl(ball, pad, &frameGame, &level);
         	attGame = TRUE;
         }
@@ -135,7 +135,7 @@ void PVPinitGame(){
 		.advanceKey = KEY_LEFT, .regressKey = KEY_RIGHT}
 		};
 	// Iniciando LEVEL
-	LEVEL level = {.dificult = 0, .mode = PvsP, .nPad = 2, .nBall =0, .newBallTime = 15,
+	LEVEL level = {.dificult = 0, .mode = PvsP, .nPad = 2, .nBall =0, .newBallTime = 30,
 		.newBallCurrentTime = 5, .p1Score = 5, .p2Score = 5};
 	
 	// Gerando as seed para os números randomicos
@@ -179,7 +179,7 @@ void PVPinitGame(){
             padControl(&pad[0], &frameGame, &level, ch);
             attGame = TRUE;
         }
-        if(millis % 55 == 0){
+        if(millis % BALL_VEL == 0){
             ballControl(ball, pad, &frameGame, &level);
         	attGame = TRUE;
         }

@@ -3,8 +3,8 @@ CFLAGS=-c
 
 all: build
 
-build: main.o ball.o paddle.o level.o graph.o config.o cpumode.o ranmar.o
-	$(CC) main.o ball.o paddle.o level.o graph.o config.o CPUmode.o ranmar.o -o pong -lncurses
+build: main.o ball.o paddle.o level.o graph.o config.o mode.o ranmar.o
+	$(CC) main.o ball.o paddle.o level.o graph.o config.o mode.o ranmar.o -o pong -lncurses
 
 main.o: main.c
 	$(CC) $(CFLAGS) main.c
@@ -24,8 +24,8 @@ graph.o: graph.c
 config.o: config.c
 	$(CC) $(CFLAGS) config.c
 
-cpumode.o: CPUmode.c
-	$(CC) $(CFLAGS) CPUmode.c
+mode.o: mode.c
+	$(CC) $(CFLAGS) mode.c
 
 ranmar.o: ranmar.c
 	$(CC) $(CFLAGS) ranmar.c

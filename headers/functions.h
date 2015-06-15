@@ -23,24 +23,32 @@ void padChVelocity(PADDLE*, int, int, int);
 
 // GRAPH
 void gameFrameDraw(WINDOW*, FRAME*);
+void homeDraw(WINDOW *, FRAME *);
 void configWindow();
 void printMenu(WINDOW*, int, char**, int);
 int configMenu(WINDOW*);
 WINDOW *create_newwin(int, int, int, int);
 void waddchColor(WINDOW*, int, int);
 
-void testeBallTime(FRAME *, int);
-void statsFrameDraw(WINDOW *, FRAME*, FRAME*);
+void scoreAtt(FRAME *, LEVEL *);
+void newBallTimeAtt(FRAME *, FRAME *, int);
 /* FRAME*/
 FRAME* create_newframe(int, int);
+void frameDraw(WINDOW *, FRAME*, FRAME*);
 void frameLoad(FRAME *, char *);
 void frameAddNumber(FRAME *, int, int, int, int);
 void frameAddString(FRAME *, char *, int, int);
+void frameAddColor(FRAME *, int, int, int, int);
+
 
 // LEVEL
 void loadMap(char barrerTable[MAP_HEIGHT][MAP_WIDTH], char*);
 void cpMaptoFrame(FRAME*, LEVEL);
 void loadLevel(LEVEL *level);
+
+// MODE
+void PVPinitGame();
+void CPUinitGame();
 
 // CONFIG
 void seedGen();

@@ -68,6 +68,40 @@ WINDOW *create_newwin(int height, int width, int starty, int startx){
     return localWin;
 }
 
+void scoreAtt(FRAME *frameColor, LEVEL *level){
+    int colorPair, squares;
+    if(level->p1Score > 3)
+        colorPair = 5 + '0'; 
+    else if(level->p1Score > 1)
+        colorPair = 12 + '0';
+    else 
+        colorPair = 13 + '0';
+    squares = level->p1Score*6;
+    frameAddColor(frameColor, colorPair, squares, 5, 4);
+    frameAddColor(frameColor, colorPair, squares, 6, 4);
+    frameAddColor(frameColor, colorPair, squares, 7, 4);
+    colorPair = 14 + '0';
+    frameAddColor(frameColor, colorPair, 30 - squares, 5, squares + 4);
+    frameAddColor(frameColor, colorPair, 30 - squares, 6, squares + 4);
+    frameAddColor(frameColor, colorPair, 30 - squares, 7, squares + 4);
+
+     if(level->p2Score > 3)
+        colorPair = 5 + '0'; 
+    else if(level->p2Score > 1)
+        colorPair = 12 + '0';
+    else 
+        colorPair = 13 + '0';
+    squares = level->p2Score*6;
+    frameAddColor(frameColor, colorPair, squares, 30, 4);
+    frameAddColor(frameColor, colorPair, squares, 31, 4);
+    frameAddColor(frameColor, colorPair, squares, 32, 4);
+    colorPair = 14 + '0';
+    frameAddColor(frameColor, colorPair, 30 - squares, 30, squares + 4);
+    frameAddColor(frameColor, colorPair, 30 - squares, 31, squares + 4);
+    frameAddColor(frameColor, colorPair, 30 - squares, 32, squares + 4);
+
+}
+
 /*
     Algum problema!!!
 */
@@ -80,12 +114,15 @@ FRAME *create_newframe(int wid, int hei){
     return localFrame;
 }
 
+/*
+    ARG = ponteiro para window, ponteiro para frame
+        Função que também desenha o frame na tela, mas esse não é necessária um frame color.
+        Visto que que não é necessário pela quantidade de objetos diferentes que deve ser 
+        tela.
+*/
 void gameFrameDraw(WINDOW *localWin, FRAME *frame){
     int i, j;
-    
-    /* A funcao setCursor parece ser meio redundante ja que a funcao move faz exatamente a mesma coisa 
-       Se for por clareza do codigo, daria para modificar a setCursor para setWinCursor e passar junto das cordenadas
-       uma WINDOW */
+
     wmove(localWin, 0, 0);
     for(i=0; i< MAP_HEIGHT; i++){
         for(j=0; j< MAP_WIDTH; j++){
@@ -104,20 +141,17 @@ void gameFrameDraw(WINDOW *localWin, FRAME *frame){
                 waddchColor(localWin, ACS_DIAMOND, 2);
             else if(frame->src[i][j]  == PAD2V_BLOCK)
                 waddchColor(localWin, ACS_DIAMOND, 3);
-            
             else
                 waddchColor(localWin, ' ', 1);
         }
-        /* Ainda nao descobri o motivo, mas quando trabalhando com WINDOWS nao precisa inserir uma nova linha, ele parece fazer automatico */
-        //waddch(localWin, '\n');
     }   
 }
+
 /*
     ARG = ponteiro para window, ponteiro para frame, ponteiro para frame
         Escreve o frame na tela com com a cor definido pelo Frame color.
 */
-
-void statsFrameDraw(WINDOW *localWin, FRAME *frame, FRAME *frameColor){
+void homeDraw(WINDOW *localWin, FRAME *frame){
     int i, j;
     
     wmove(localWin, 0, 0);
@@ -137,21 +171,66 @@ void statsFrameDraw(WINDOW *localWin, FRAME *frame, FRAME *frameColor){
                 waddchColor(localWin, ACS_HLINE, 1);
             else if(frame->src[i][j] == '|')
                 waddchColor(localWin, ACS_VLINE, 1);
+            else if(frame->src[i][j] == '0')
+                waddchColor(localWin, 'o', 10);
+            else
+                waddchColor(localWin, frame->src[i][j], 11);
+        }
+    }
+}
+
+/*
+    ARG = ponteiro para window, ponteiro para frame, ponteiro para frame
+        Escreve o frame na tela com com a cor definido pelo Frame color.
+*/
+void frameDraw(WINDOW *localWin, FRAME *frame, FRAME *frameColor){
+    int i, j;
+    
+    wmove(localWin, 0, 0);
+    for(i = 0; i < frame->height; i++){
+        for(j = 0; j< frame->width; j++){
+            if(frame->src[i][j] == '_')
+                waddchColor(localWin, ' ', 1);
+            else if(frame->src[i][j] == '(')
+                waddchColor(localWin, ACS_ULCORNER, 1);
+            else if(frame->src[i][j] == '{')
+                waddchColor(localWin, ACS_LLCORNER, 1);
+            else if(frame->src[i][j] == ')')
+                waddchColor(localWin, ACS_URCORNER, 1);
+            else if(frame->src[i][j] == '}')
+                waddchColor(localWin, ACS_LRCORNER, 1);
+            else if(frame->src[i][j] == '-')
+                waddchColor(localWin, ACS_HLINE, 1);
+            else if(frame->src[i][j] == '|')
+                waddchColor(localWin, ACS_VLINE, 1);
+            else if(frame->src[i][j] == '@')
+                waddchColor(localWin, ' ', 11);
             else if(frame->src[i][j] == '^')
-                waddchColor(localWin, ' ', 2);
-            else if(frame->src[i][j] == '&')
                 waddchColor(localWin, ' ', frameColor->src[i][j] - '0');
             else if(frame->src[i][j] == '#')
                 waddchColor(localWin, ACS_HLINE, frameColor->src[i][j] - '0');
+            else if(frame->src[i][j] == '&')
+                waddchColor(localWin, ' ', frameColor->src[i][j] - '0');
             else
                 waddchColor(localWin, frame->src[i][j], frameColor->src[i][j] - '0');
         }
     }
 }
-void testeBallTime(FRAME *frame, int newBallTime){
-    if(newBallTime > 0)
+
+void newBallTimeAtt(FRAME *frame, FRAME *frameColor, int newBallTime){
+    int colorPair;
+    if(newBallTime > 5)
+        colorPair = 1 + '0';
+    else if(newBallTime > 3)
+        colorPair = 9 + '0';
+    else if(newBallTime > 0)
+        colorPair = 6 + '0';
+    if(newBallTime > 0){
         frameAddNumber(frame, newBallTime, 2, 22, 33);
+        frameAddColor(frameColor, colorPair, 3, 22, 33);
+    }
 }
+
 void frameLoad(FRAME *frame, char *fileName){
     FILE *file;
     char c;
@@ -188,13 +267,16 @@ void configWindow(){
     init_pair(2, COLOR_WHITE, COLOR_GREEN); // Cor pad 1
     init_pair(3, COLOR_WHITE, COLOR_BLUE); // Cor pad 2
     init_pair(4, COLOR_GREEN, COLOR_RED); // Cor BARRER
-    init_pair(5, COLOR_RED, COLOR_GREEN); // Cor Oposto BARRER
+    init_pair(5, COLOR_BLACK, COLOR_GREEN); // Cor Oposto BARRER
     init_pair(6, COLOR_RED, COLOR_BLACK);
     init_pair(7, COLOR_GREEN, COLOR_BLACK);
     init_pair(8, COLOR_BLUE, COLOR_BLACK);
     init_pair(9, COLOR_YELLOW, COLOR_BLACK);
     init_pair(10, COLOR_CYAN, COLOR_BLACK);
     init_pair(11, COLOR_BLACK, COLOR_CYAN);
+    init_pair(12, COLOR_BLACK, COLOR_YELLOW);
+    init_pair(13, COLOR_BLACK, COLOR_RED);
+    init_pair(14, COLOR_RED, COLOR_BLACK);
 
     attrset(COLOR_PAIR(1));
 }
@@ -257,4 +339,17 @@ void frameAddColor(FRAME *frame, int colorPair, int squares, int line, int colum
             j++;
         frame->src[j][(colum+i)%lineLen] = colorPair;
     }
+}
+
+void debugTable(FRAME *frame, char* file){
+    FILE *out;
+    int i, j;
+    out = fopen(file, "w");
+    for(i = 0; i < frame->height; i++){
+        for(j=0; j < frame->width; j++){
+            fputc(frame->src[i][j], out);
+        }
+        fputc('\n', out);
+    }
+    fclose(out);
 }

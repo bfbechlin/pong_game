@@ -100,7 +100,9 @@ void ballDel(BALL *dummy_ball, FRAME *frameGame, LEVEL *level){
     // Apagando a bola da tela
     frameGame->src[dummy_ball->position.y][dummy_ball->position.x] = VOID_BLOCK;
     // Diminuindo a quantidade de bolas ativas
-    level->nBall += -1;
+    level->nBall --;
+    if(level->nBall == 0)
+        level->newBallCurrentTime = 2;
 }
 
 /*
@@ -145,24 +147,41 @@ int ballCollisionVerification(BALL *dummy_ball, FRAME *frameGame){
         ponteiro para UM level 
     Realiza todas a dinâmica de choques de UMA bola com objetos do cenário. Sendo assim
         também realiza a verificação do choque com pad e se estão com velocidades 
-        contrárias
+        contrárias. Também realiza teste se o modo de é com 4 pads.
 */
 void ballAction(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level){
     int block; // Recebe a macro do pad, assim podendo identificar com qual ocorreu o choque
     switch(block = ballCollisionVerification(dummy_ball, frameGame)){
         case TOP_BLOCK:
-            dummy_ball->velocity.y *= -1;
-            // TEMPERÁRIO
-            if(dummy_ball->position.x == 1 || dummy_ball->position.x == MAP_WIDTH-2)
-                dummy_ball->velocity.x *= -1;
+            if(level->mode == PvsB){
+                dummy_ball->velocity.y *= -1;
+                if(dummy_ball->position.x == 1 || dummy_ball->position.x == MAINW_WIDTH -1)
+                    dummy_ball->velocity.x *= -1;
+            }
+            else{
+                level->p1Score --;
+                ballDel(dummy_ball, frameGame, level);
+            }
             break;
         case BOT_BLOCK:
-            level->p1Score ++;
+            level->p2Score --;
             ballDel(dummy_ball, frameGame, level);
             break;
+         case LEFT_BLOCK:
+            if(level->mode > PvsP){
+                level->p1Score --;
+                ballDel(dummy_ball, frameGame, level);
+            }
+            else
+                dummy_ball->velocity.x *= -1;
+            break;
         case RIGHT_BLOCK:
-        case LEFT_BLOCK:
-            dummy_ball->velocity.x *= -1;
+            if(level->mode > PvsP){
+                level->p2Score --;
+                ballDel(dummy_ball, frameGame, level);
+            }
+            else
+                dummy_ball->velocity.x *= -1;   
             break;
         // CHOQUES COM PADS HORIZONTAIS
         case PAD1H_BLOCK:

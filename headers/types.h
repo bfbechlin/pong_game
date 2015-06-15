@@ -43,8 +43,12 @@ typedef struct{
     char mapCode;
     int dificult;
     int mode;
+
     int nPad;
     int nBall;
+    int newBallTime;
+    int newBallCurrentTime;
+    
     int p1Score;
     int p2Score;
 

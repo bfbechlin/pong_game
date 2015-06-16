@@ -60,8 +60,8 @@ BALL testBallDistance(BALL *returningBalls, int numReturningBalls, PADDLE *botPa
 }
 
 /* botDecisionControl() recebe um PADDLE que será o bot, um array de BALL com as bolas em jogo, e um LEVEL, decide se o bot irá mover para esquerda ou direita comparando sua posição com a bola mais próxima */
-void botDecisionControl(PADDLE *botPad, BALL *dummy_ball, LEVEL *level){
-    int numReturningBalls = countReturningBalls(dummy_ball, level);
+void botDecisionControl(PADDLE *botPad, BALL *dummy_ball, LEVEL *level, int numRetBalls){
+    int numReturningBalls = numRetBalls;
     BALL closerBall;
     BALL returningBalls[numReturningBalls];
 
@@ -91,7 +91,10 @@ void botDecisionControl(PADDLE *botPad, BALL *dummy_ball, LEVEL *level){
 /* controlBotPaddle() recebe um PADDLE que será o bot, um array de BALL com as bolas em jogo, um FRAME e um LEVEL, 
    e controla a movimentação do bot, verifica as colisões e desenha o pad na nova posição */
 void controlBotPaddle(PADDLE *botPad, BALL *dummy_ball,  FRAME *frameGame, LEVEL *level){
-    botDecisionControl(botPad, dummy_ball, level);
-    padCollisionVerification(botPad, frameGame);
-    padDraw(botPad, frameGame, botPad->charCode);
+    int numRetBalls;
+    if((numRetBalls = countReturningBalls(dummy_ball, level)) > 0){
+        botDecisionControl(botPad, dummy_ball, level, numRetBalls);
+        padCollisionVerification(botPad, frameGame);
+        padDraw(botPad, frameGame, botPad->charCode);
+    }
 }

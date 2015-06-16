@@ -1,116 +1,29 @@
 #include "./headers/header.h"
 
-/*
-    ARG = ponteiro para UMA bola
-    Atualiza posição da bola recebida.
-*/
-void ballAttPos(BALL *dummy_ball){
-    dummy_ball->position.x += dummy_ball->velocity.x;
-    dummy_ball->position.y += dummy_ball->velocity.y;
-}
+// FUNÇÕES QUE LIDAM COM TODAS AS BOLAS
 
 /*
-    ARG = ponteiro para UMA bola, ponteiro para UM frame
-    Verifica colisões com cenário e pads.
+    ARG = ponteiro para VETOR bola
+    RET/MOD = modifica a propriedade das bolas
+    Deixa todas as bolas desativadas usado para início da fase
 */
-int ballCollisionVerification(BALL *dummy_ball, FRAME *frameGame){
-    int row, col;
-    row = dummy_ball->position.y + dummy_ball->velocity.y;
-    col = dummy_ball->position.x + dummy_ball->velocity.x;
-    // BLOCOS DO FIM DO CENÁRIO
-    if(frameGame->src[row][col] == TOP_BLOCK)
-        return TOP_BLOCK;
-    if(frameGame->src[row][col] == BOT_BLOCK)
-        return BOT_BLOCK;
-    if(frameGame->src[row][col] == LEFT_BLOCK)
-        return LEFT_BLOCK;
-    if(frameGame->src[row][col] == RIGHT_BLOCK)
-        return RIGHT_BLOCK;
-    // VERIFICANDO COLISÃO COM BARREIRAS E PADS
-    if(frameGame->src[row][dummy_ball->position.x] >= PAD1H_BLOCK && frameGame->src[row][dummy_ball->position.x] <= BARRIER_BLOCK){
-        dummy_ball->velocity.y *= -1;
-        if(frameGame->src[dummy_ball->position.y][col] >= PAD1H_BLOCK && frameGame->src[dummy_ball->position.y][col] <= BARRIER_BLOCK)
-            dummy_ball->velocity.x *= -1;
-        return frameGame->src[row][dummy_ball->position.x];
-    }
-    // VERIFICANDO COLISÃO COM BARREIRAS E PADS
-    if(frameGame->src[dummy_ball->position.y][col] >= PAD1H_BLOCK && frameGame->src[dummy_ball->position.y][col] <= BARRIER_BLOCK){
-        dummy_ball->velocity.x *= -1;
-        return frameGame->src[dummy_ball->position.y][col];
-    }
-    // COLISÕES DIAGONAIS COM BARREIRAS E PADS
-    if(frameGame->src[row][col] >= PAD1H_BLOCK && frameGame->src[row][col] <= BARRIER_BLOCK){
-        dummy_ball->velocity.y *= -1;
-        dummy_ball->velocity.x *= -1;
-        return FALSE;
-    }
-}
-
-/*
-    ARG = ponteiro para UMA bola, ponteiro para UM frame
-    Edita o frame com as novas posições das bolas, sendo necessário ter verificado as colisões
-        e atualizado as velocidades da bola.
-*/
-void ballDraw(BALL *dummy_ball, FRAME *frameGame){
-    if(dummy_ball->enabled == TRUE){
-        // Apaga a posição onde a bola se encontrava anteriormente
-        frameGame->src[dummy_ball->position.y][dummy_ball->position.x] = VOID_BLOCK;
-        // Atualiza a posição da bola
-        ballAttPos(dummy_ball); 
-        // Desenha novamente a bola em sua nova posição
-        frameGame->src[dummy_ball->position.y][dummy_ball->position.x] = BALL_BLOCK;
-    }
-}
-
-/*
-    ARG = ponteiro para UMA bola, ponteiro para VETOR pads, ponteiro para UM frame,
-        ponteiro para UM level 
-    Realiza todas a dinâmica de choques de UMA bola com objetos do cenário. Sendo assim
-        também realiza a verificação do choque com pad e se estão com velocidades 
-        contrárias
-*/
-void ballAction(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level){
-    int block; // Recebe a macro do pad, assim podendo identificar com qual ocorreu o choque
-    switch(block = ballCollisionVerification(dummy_ball, frameGame)){
-        case TOP_BLOCK:
-            dummy_ball->velocity.y *= -1;
-            // TEMPERÁRIO
-            if(dummy_ball->position.x == 1 || dummy_ball->position.x == MAP_WIDTH-2)
-                dummy_ball->velocity.x *= -1;
-            break;
-        case BOT_BLOCK:
-            level->p1Score ++;
-            ballDel(dummy_ball, frameGame, level);
-            break;
-        case RIGHT_BLOCK:
-        case LEFT_BLOCK:
-            dummy_ball->velocity.x *= -1;
-            break;
-        // CHOQUES COM PADS HORIZONTAIS
-        case PAD1H_BLOCK:
-        case PAD2H_BLOCK:
-            if((dummy_pad[block-1].velocity.x * -1) == dummy_ball->velocity.x)
-                dummy_ball->velocity.x *= -1; 
-            break;
-        // CHOQUES COM PADS VERTICAIS
-        case PAD1V_BLOCK:
-        case PAD2V_BLOCK:
-            if((dummy_pad[block-1].velocity.y*-1) == dummy_ball->velocity.y)
-                dummy_ball->velocity.y*=-1; 
-            break;
-        default:
-            break;
+void ballNewLevel(BALL *dummy_ball){
+    int i;
+    // Iniciando sem nenhuma bola
+    for(i =0; i < MAXBALL; i++){
+        dummy_ball[i].enabled = FALSE;
     }
 }
 
 /*
     ARG = ponteiro para VETOR bola, ponteiro para VETOR pads, ponteiro para UM frame,
         ponteiro para UM level 
+    RET /
     Realiza controle de TODAS as bolas, atualizando somente as que estão ativas.
 */
 void ballControl(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level){
-	int i;
-    // LEVANDO ARRAY DE BOLAS
+    int i;
+    // Enviando o array de bolas
     for(i = 0; i < MAXBALL; i++){
         if(dummy_ball[i].enabled == TRUE){
             ballAction(&dummy_ball[i], dummy_pad, frameGame, level);
@@ -119,6 +32,12 @@ void ballControl(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *l
     }
 }
 
+/*
+    ARG = ponteiro para VETOR bola, ponteiro para VETOR pads, ponteiro para UM level 
+    Adiciona uma bola no array no indice mais próxima do zero e que esteja desativada. 
+    A posição dessa bola é em cima de algum dos pads, aleatório, e sua direção também
+        é aletória.
+*/
 void ballAdd(BALL *dummy_ball, PADDLE *dummy_pad, LEVEL *level){
     int index, i;
     BOOL found;  
@@ -160,6 +79,7 @@ void ballAdd(BALL *dummy_ball, PADDLE *dummy_pad, LEVEL *level){
     i = 0;
     do{
         if(dummy_ball[i].enabled == FALSE){
+            // Copiando a struct da bola local para as bolas do jogo
             dummy_ball[i] = ball;
             level->nBall += 1;
             found = TRUE;
@@ -167,9 +87,12 @@ void ballAdd(BALL *dummy_ball, PADDLE *dummy_pad, LEVEL *level){
         i++;
     }while(found == FALSE && i < MAXBALL);
 }
+
+// FUNÇÕES QUE LIDAM SOMENTE COM UMA BOLA
+
 /*
-    ARG = UMA BOLA
-    Delata a bola
+    ARG = ponteiro para UMA bola, ponteiro para UM frame, ponteiro para UM level 
+    Delata já apaga a bola recebida da tela
 */
 void ballDel(BALL *dummy_ball, FRAME *frameGame, LEVEL *level){
     // Desativa bola
@@ -177,13 +100,130 @@ void ballDel(BALL *dummy_ball, FRAME *frameGame, LEVEL *level){
     // Apagando a bola da tela
     frameGame->src[dummy_ball->position.y][dummy_ball->position.x] = VOID_BLOCK;
     // Diminuindo a quantidade de bolas ativas
-    level->nBall += -1;
+    level->nBall --;
+    if(level->nBall == 0)
+        level->newBallCurrentTime = 2;
 }
 
-void ballNewLevel(BALL *dummy_ball){
-    int i;
-    // Iniciando sem nenhuma bola
-    for(i =0; i < MAXBALL; i++){
-        dummy_ball[i].enabled = FALSE;
+/*
+    ARG = ponteiro para UMA bola, ponteiro para UM frame
+    Verifica colisões com cenário e pads.
+*/
+int ballCollisionVerification(BALL *dummy_ball, FRAME *frameGame){
+    int row, col;
+    row = dummy_ball->position.y + dummy_ball->velocity.y;
+    col = dummy_ball->position.x + dummy_ball->velocity.x;
+    // BLOCOS DO FIM DO CENÁRIO
+    if(frameGame->src[row][col] == TOP_BLOCK)
+        return TOP_BLOCK;
+    if(frameGame->src[row][col] == BOT_BLOCK)
+        return BOT_BLOCK;
+    if(frameGame->src[row][col] == LEFT_BLOCK)
+        return LEFT_BLOCK;
+    if(frameGame->src[row][col] == RIGHT_BLOCK)
+        return RIGHT_BLOCK;
+    // VERIFICANDO COLISÃO COM BARREIRAS E PADS
+    if(frameGame->src[row][dummy_ball->position.x] >= PAD1H_BLOCK && frameGame->src[row][dummy_ball->position.x] <= BARRIER_BLOCK){
+        dummy_ball->velocity.y *= -1;
+        if(frameGame->src[dummy_ball->position.y][col] >= PAD1H_BLOCK && frameGame->src[dummy_ball->position.y][col] <= BARRIER_BLOCK)
+            dummy_ball->velocity.x *= -1;
+        return frameGame->src[row][dummy_ball->position.x];
+    }
+    // VERIFICANDO COLISÃO COM BARREIRAS E PADS
+    if(frameGame->src[dummy_ball->position.y][col] >= PAD1H_BLOCK && frameGame->src[dummy_ball->position.y][col] <= BARRIER_BLOCK){
+        dummy_ball->velocity.x *= -1;
+        return frameGame->src[dummy_ball->position.y][col];
+    }
+    // COLISÕES DIAGONAIS COM BARREIRAS E PADS
+    if(frameGame->src[row][col] >= PAD1H_BLOCK && frameGame->src[row][col] <= BARRIER_BLOCK){
+        dummy_ball->velocity.y *= -1;
+        dummy_ball->velocity.x *= -1;
+        return FALSE;
     }
 }
+
+/*
+    ARG = ponteiro para UMA bola, ponteiro para VETOR pads, ponteiro para UM frame,
+        ponteiro para UM level 
+    Realiza todas a dinâmica de choques de UMA bola com objetos do cenário. Sendo assim
+        também realiza a verificação do choque com pad e se estão com velocidades 
+        contrárias. Também realiza teste se o modo de é com 4 pads.
+*/
+void ballAction(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level){
+    int block; // Recebe a macro do pad, assim podendo identificar com qual ocorreu o choque
+    switch(block = ballCollisionVerification(dummy_ball, frameGame)){
+        case TOP_BLOCK:
+            if(level->mode == PvsB){
+                dummy_ball->velocity.y *= -1;
+                if(dummy_ball->position.x == 1 || dummy_ball->position.x == MAINW_WIDTH -1)
+                    dummy_ball->velocity.x *= -1;
+            }
+            else{
+                level->p1Score --;
+                ballDel(dummy_ball, frameGame, level);
+            }
+            break;
+        case BOT_BLOCK:
+            level->p2Score --;
+            ballDel(dummy_ball, frameGame, level);
+            break;
+         case LEFT_BLOCK:
+            if(level->mode > PvsP){
+                level->p1Score --;
+                ballDel(dummy_ball, frameGame, level);
+            }
+            else
+                dummy_ball->velocity.x *= -1;
+            break;
+        case RIGHT_BLOCK:
+            if(level->mode > PvsP){
+                level->p2Score --;
+                ballDel(dummy_ball, frameGame, level);
+            }
+            else
+                dummy_ball->velocity.x *= -1;   
+            break;
+        // CHOQUES COM PADS HORIZONTAIS
+        case PAD1H_BLOCK:
+        case PAD2H_BLOCK:
+            if((dummy_pad[block-1].velocity.x * -1) == dummy_ball->velocity.x)
+                dummy_ball->velocity.x *= -1; 
+            break;
+        // CHOQUES COM PADS VERTICAIS
+        case PAD1V_BLOCK:
+        case PAD2V_BLOCK:
+            if((dummy_pad[block-1].velocity.y*-1) == dummy_ball->velocity.y)
+                dummy_ball->velocity.y*=-1; 
+            break;
+        default:
+            break;
+    }
+}
+
+/*
+    ARG = ponteiro para UMA bola
+    Atualiza posição da bola recebida.
+*/
+void ballAttPos(BALL *dummy_ball){
+    dummy_ball->position.x += dummy_ball->velocity.x;
+    dummy_ball->position.y += dummy_ball->velocity.y;
+}
+
+/*
+    ARG = ponteiro para UMA bola, ponteiro para UM frame
+    Edita o frame com as novas posições das bolas, sendo necessário ter verificado as colisões
+        e atualizado as velocidades da bola.
+*/
+void ballDraw(BALL *dummy_ball, FRAME *frameGame){
+    if(dummy_ball->enabled == TRUE){
+        // Apaga a posição onde a bola se encontrava anteriormente
+        frameGame->src[dummy_ball->position.y][dummy_ball->position.x] = VOID_BLOCK;
+        // Atualiza a posição da bola
+        ballAttPos(dummy_ball); 
+        // Desenha novamente a bola em sua nova posição
+        frameGame->src[dummy_ball->position.y][dummy_ball->position.x] = BALL_BLOCK;
+    }
+}
+
+
+

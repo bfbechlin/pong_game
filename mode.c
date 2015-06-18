@@ -28,7 +28,7 @@ void CPUinitGame(){
 		};
 	// Iniciando LEVEL
 	LEVEL level = {.dificult = 0, .mode = PvsB, .nPad = 2, .nBall =0, .newBallTime = 30,
-		.newBallCurrentTime = 3, .p1Score = 5, .p2Score = 5};
+		.newBallCurrentTime = 3, .p1Score = 5, .p2Score = 5, .padP1Speed = 20, .padP2Speed = 100};
 	
 	// Gerando as seed para os números randomicos
 	seedGen(); 
@@ -65,9 +65,12 @@ void CPUinitGame(){
 	while(ch != ESC){ // Enquanto a tecla ESC nao for pressionada
         attGame = FALSE;
         attStats = FALSE;
-        if(millis % 20 == 0){
+        if(millis % level.padP1Speed  == 0){
             ch = getch();
             padControl(&pad[1], &frameGame, &level, ch);
+            attGame = TRUE;
+        }
+        if(millis % level.padP2Speed == 0){
             controlBotPaddle(&pad[0], ball, &frameGame, &level);
             attGame = TRUE;
         }
@@ -89,6 +92,13 @@ void CPUinitGame(){
        		}
        		attStats = TRUE;
        	}
+    
+        if(level.p1Score == 0){
+            //PLAYER GANHOU - JOGO RECOMEÇA COM NIVEL MAIS ALTO
+            increaseLevel(&level, pad);
+            attGame = TRUE;
+            attStats = TRUE;
+        }
         	
 
         if(attGame == TRUE){

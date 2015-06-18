@@ -1,13 +1,13 @@
 #include "./headers/header.h"
-#include <math.h>
 
 /* countReturningBalls recebe um array de BALL com as bolas em jogo, e uma instancia de level. Le o array inteiro e conta quantas bolas estao avançando em direção ao bot.
    Retorna um inteiro com o valor de bolas indo até o bot */
 int countReturningBalls(BALL *dummy_ball, LEVEL *level){
     int i;
     int numReturningBalls=0;
-    
-    for(i=0; i< level->nBall; i++){
+    int nBall = level->nBall;
+ 
+    for(i=0; i< nBall; i++){
         if(dummy_ball[i].enabled == TRUE && dummy_ball[i].velocity.y == -1)
             numReturningBalls++;
     }
@@ -18,8 +18,9 @@ int countReturningBalls(BALL *dummy_ball, LEVEL *level){
    Faz a leitura de todas as bolas e guarda as bolas que estão indo em direção ao Bot no segundo array*/ 
 void testBallsDirection(BALL *dummy_ball, BALL *returningBalls, LEVEL *level){
     int i, j=0;
-    
-    for(i=0; i < level->nBall; i++){
+    int nBall = level->nBall;
+
+    for(i=0; i < nBall; i++){
         if(dummy_ball[i].enabled == TRUE && dummy_ball[i].velocity.y == -1){ //testa se a i-esima bola está ativada e vai em direção ao bot
             returningBalls[j] = dummy_ball[i]; //salva em returningBalls somente as bolas ativadas que estao indo até o bot
             j++;
@@ -34,12 +35,12 @@ BALL testBallDistance(BALL *returningBalls, int numReturningBalls, PADDLE *botPa
     float distance, closerDist;
     BALL closerBall = returningBalls[i]; //Atribui a closerBall o valor da primeira bola para iniciar os testes
     
-    /* Calcula distancia entre returningBall[0] e botPad usando pitagoras e salva como closerDist temporoario */
-    closerDist = sqrt((returningBalls[i].position.x - (botPad->position.x + botPad->len/2))*(returningBalls[i].position.x - (botPad->position.x + botPad->len/2)) + (returningBalls[i].position.y - botPad->position.y)*(returningBalls[i].position.y - botPad->position.x));
-    
-    if(botPad->vertical == FALSE){
+    if(botPad->vertical == FALSE){ 
+        /* Calcula distancia entre returningBall[0] e botPad usando pitagoras e salva como closerDist temporoario */
+        closerDist = (returningBalls[i].position.x - (botPad->position.x + botPad->len/2))*(returningBalls[i].position.x - (botPad->position.x + botPad->len/2)) + (returningBalls[i].position.y - botPad->position.y)*(returningBalls[i].position.y - botPad->position.y);
+        
         for(i=1; i < numReturningBalls; i++){
-            distance = sqrt((returningBalls[i].position.x - (botPad->position.x + botPad->len/2))*(returningBalls[i].position.x - (botPad->position.x + botPad->len/2)) + (returningBalls[i].position.y - botPad->position.y)*(returningBalls[i].position.y - botPad->position.y));
+            distance = (returningBalls[i].position.x - (botPad->position.x + botPad->len/2))*(returningBalls[i].position.x - (botPad->position.x + botPad->len/2)) + (returningBalls[i].position.y - botPad->position.y)*(returningBalls[i].position.y - botPad->position.y);
             if(distance < closerDist){
                 closerDist = distance;
                 closerBall = returningBalls[i];
@@ -47,16 +48,19 @@ BALL testBallDistance(BALL *returningBalls, int numReturningBalls, PADDLE *botPa
         }
     }
     else{
+        closerDist = (returningBalls[i].position.y - (botPad->position.y + botPad->len/2))*(returningBalls[i].position.y - (botPad->position.y + botPad->len/2)) + (returningBalls[i].position.x - botPad->position.x)*(returningBalls[i].position.x - botPad->position.x);
+        
         for(i=1; i < numReturningBalls; i++){
-            distance = sqrt((returningBalls[i].position.y - (botPad->position.y + botPad->len/2))*(returningBalls[i].position.y - (botPad->position.y + botPad->len/2)) + (returningBalls[i].position.x - botPad->position.x)*(returningBalls[i].position.x - botPad->position.x));
+            distance = (returningBalls[i].position.y - (botPad->position.y + botPad->len/2))*(returningBalls[i].position.y - (botPad->position.y + botPad->len/2)) + (returningBalls[i].position.x - botPad->position.x)*(returningBalls[i].position.x - botPad->position.x);
             if(distance < closerDist){
                 closerDist = distance;
                 closerBall = returningBalls[i];
             }
         }
     }
-
+       
     return closerBall;
+    //usleep(500);
 }
 
 /* botDecisionControl() recebe um PADDLE que será o bot, um array de BALL com as bolas em jogo, e um LEVEL, decide se o bot irá mover para esquerda ou direita comparando sua posição com a bola mais próxima */

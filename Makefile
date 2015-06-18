@@ -4,7 +4,7 @@ CFLAGS=-c
 all: build
 
 build: main.o ball.o paddle.o level.o graph.o config.o mode.o ranmar.o bot.o
-	$(CC) main.o ball.o paddle.o level.o graph.o config.o mode.o ranmar.o bot.o -o pong -lncurses -lm
+	$(CC) main.o ball.o paddle.o level.o graph.o config.o mode.o ranmar.o bot.o -o pong -lncurses
 
 main.o: main.c
 	$(CC) $(CFLAGS) main.c

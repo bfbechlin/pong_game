@@ -153,15 +153,8 @@ void ballAction(BALL *dummy_ball, PADDLE *dummy_pad, FRAME *frameGame, LEVEL *le
     int block; // Recebe a macro do pad, assim podendo identificar com qual ocorreu o choque
     switch(block = ballCollisionVerification(dummy_ball, frameGame)){
         case TOP_BLOCK:
-            if(level->mode == PvsB){
-                dummy_ball->velocity.y *= -1;
-                if(dummy_ball->position.x == 1 || dummy_ball->position.x == MAINW_WIDTH -1)
-                    dummy_ball->velocity.x *= -1;
-            }
-            else{
-                level->p1Score --;
-                ballDel(dummy_ball, frameGame, level);
-            }
+            level->p1Score --;
+            ballDel(dummy_ball, frameGame, level);
             break;
         case BOT_BLOCK:
             level->p2Score --;

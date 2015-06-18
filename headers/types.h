@@ -51,7 +51,8 @@ typedef struct{
     
     int p1Score;
     int p2Score;
-
+    int padP1Speed;
+    int padP2Speed;
 }LEVEL;
 
 typedef struct{
@@ -61,5 +62,12 @@ typedef struct{
     int height;
 
 }FRAME;
+
+typedef struct{
+    
+    char playerName[NAME_LEN];
+    int recordLevel;
+
+}RECORD;
 
 #endif

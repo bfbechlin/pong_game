@@ -27,7 +27,7 @@ void CPUinitGame(){
 		.advanceKey = KEY_LEFT, .regressKey = KEY_RIGHT}
 		};
 	// Iniciando LEVEL
-	LEVEL level = {.dificult = 0, .mode = PvsB, .nPad = 2, .nBall =0, .newBallTime = 30,
+	LEVEL level = {.dificult = 1, .mapCode = 0, .mode = PvsB, .nPad = 2, .nBall =0, .newBallTime = 30,
 		.newBallCurrentTime = 3, .p1Score = 5, .p2Score = 5, .padP1Speed = 20, .padP2Speed = 100};
 	
 	// Gerando as seed para os números randomicos
@@ -95,7 +95,7 @@ void CPUinitGame(){
     
         if(level.p1Score == 0){
             //PLAYER GANHOU - JOGO RECOMEÇA COM NIVEL MAIS ALTO
-            increaseLevel(&level, pad);
+            increaseLevel(&level, &frameStats, pad);
             attGame = TRUE;
             attStats = TRUE;
         }

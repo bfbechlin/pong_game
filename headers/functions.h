@@ -22,10 +22,8 @@ int padKeyBoardControl(PADDLE*, int, int, int);
 void padChVelocity(PADDLE*, int, int, int);
 
 //BOT
-int countReturningBalls(BALL*, LEVEL*);
-void testBallsDirection(BALL*, BALL*, LEVEL*);
-BALL testBallDistance(BALL*, int, PADDLE*);
-void botDecisionControl(PADDLE*, BALL*, LEVEL*, int);
+BALL testBallDistance(BALL*, PADDLE*);
+void botDecisionControl(PADDLE*, BALL*, LEVEL*);
 void controlBotPaddle(PADDLE*, BALL*, FRAME*, LEVEL*);
 
 // GRAPH
@@ -52,7 +50,7 @@ void frameAddColor(FRAME *, int, int, int, int);
 void loadMap(char barrerTable[MAP_HEIGHT][MAP_WIDTH], char*);
 void cpMaptoFrame(FRAME*, LEVEL);
 void loadLevel(LEVEL *level);
-void increaseLevel(LEVEL *, PADDLE *);
+void increaseLevel(LEVEL *, FRAME*, PADDLE *);
 
 // MODE
 void PVPinitGame();

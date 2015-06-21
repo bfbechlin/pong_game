@@ -64,19 +64,21 @@ void loadLevel(LEVEL *level){
         }
 }
 
-void increaseLevel(LEVEL *level, PADDLE *pad){            
+void increaseLevel(LEVEL *level, FRAME *frameStats, PADDLE *pad){            
     if(level->mapCode == 4) //seleciona um novo mapa na ordem
         level->mapCode = 0;
-        else level->mapCode++;
+    else level->mapCode++;
+    frameAddNumber(frameStats, level->mapCode, 2, 19, 7); //atualiza frameStats com o numero do novo mapa
 
     if(level->dificult < 20) //aumenta o marcador do nivel de dificuldade
         level->dificult++;
+    frameAddNumber(frameStats, level->dificult, 3, 21, 12); //atualiza frameStats com o numero do novo nivel de dificuldade
 
     if(level->newBallTime > 10) //diminui o tempo para surgir novas bolas
         level->newBallTime--;
               
     if(level->padP2Speed > 50) //aumenta taxa de atualizaçao do bot
-        level->padP2Speed-2;
+        level->padP2Speed = level->padP2Speed - 0.5*level->dificult + 1;
            
     level->nBall =0; //configura os demais parametros
     level->newBallCurrentTime = 3; 

@@ -3,10 +3,10 @@
 int main(){
     int choice, PosX, PosY; /* Variavel usada para selecionar a escolha do Menu inicial */
     WINDOW *menuWin, *homeWin;
-    //FRAME *homeFrame;
+    FRAME *homeFrame;
     // Configurações gerais da ncurses, bem como cores do terminal
     configWindow();
-    
+
     /* Criando janelas */
     PosX = (COLS - MENU_WIDTH)/2;
     PosY = (LINES - MENU_HEIGHT)/2;
@@ -16,8 +16,8 @@ int main(){
     PosY = (LINES - SCREEN_HEIGHT)/2;
     homeWin = create_newwin(SCREEN_HEIGHT, SCREEN_WIDTH, PosY, PosX);
 
-    FRAME homeFrame = {.height = SCREEN_HEIGHT, .width = SCREEN_WIDTH};
-    frameLoad(&homeFrame, "maps/frames/home.fr");
+    homeFrame = create_newframe(SCREEN_HEIGHT, SCREEN_WIDTH);
+    frameLoad(homeFrame, "frames/home.fr");
 
     /* Chama o menu inicial que retorna a opcao escolhida
         **Switch das opcoes do menu**
@@ -26,10 +26,10 @@ int main(){
        choice=3 -> Mostra janela com o recorde
        choice=4 -> Sai do jogo */
     do{
-        homeDraw(homeWin, &homeFrame);
+        homeDraw(homeWin, homeFrame);
         wrefresh(homeWin);
         switch(choice = configMenu(menuWin)){
-            case 1: 
+            case 1:
     	        CPUinitGame();
                 break;
             case 2:

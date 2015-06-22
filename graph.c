@@ -44,7 +44,7 @@ int configMenu(WINDOW *menuWin){
 
 void printMenu(WINDOW *menuWin, int selected, char *opt[], int numOpt){
     int textPosX=2, textPosY=2, i;
-    
+
     box(menuWin, 0, 0);
     for(i=0;i<numOpt;i++){
         if(selected==i+1){ //Destaca a opcao escolhida
@@ -60,7 +60,7 @@ void printMenu(WINDOW *menuWin, int selected, char *opt[], int numOpt){
 
 WINDOW *create_newwin(int height, int width, int starty, int startx){
     WINDOW *localWin;
-    
+
     localWin = newwin(height, width, starty, startx);
     box(localWin, 0, 0);
     wrefresh(localWin);
@@ -68,13 +68,71 @@ WINDOW *create_newwin(int height, int width, int starty, int startx){
     return localWin;
 }
 
+/*
+    ARG = int height, int witdh
+	Inicia um frame com uma determinada altura e largura, para isso é necessário alocar usando
+		alocação dinâmica de memória, visto que o ponteiro não foi inicializado.
+*/
+FRAME *create_newframe(int height, int width){
+    FRAME *localFrame;
+    char ** sourceTable;
+    int i;
+    // Alocando espaço total na memória para tabela
+    sourceTable = malloc(height*width*sizeof(char));
+
+    // A cada linha criando um ponteiro para a linha
+    for ( i = 0; i < height; i++ )
+        sourceTable[i] = (char *)malloc(width*sizeof(char));
+	// Alocando dinamicamente o FRAME
+	localFrame = (FRAME *)malloc(height*width + 2*sizeof(int));
+
+	localFrame->src = sourceTable;
+    localFrame->width = width;
+    localFrame->height = height;
+    return localFrame;
+}
+
+/*
+    ARG = ponteiro para FRAME
+	Libera a porção de memória ocupado pelo FRAME, visto que usando malloc a memória não é liberada
+		com o fim da função que a criou.
+
+*/
+void delframe(FRAME *frame){
+	free(frame->src);
+	free(frame);
+}
+
+void blinkPlayer(WINDOW *statsWin, FRAME *statsFrame, FRAME *statsColorFrame, int player){
+    int line, colorPair1, colorPair2;
+    line = (player - 1)*25 + 1;
+    colorPair1 = player + 14 + '0';
+    colorPair2 = player + 6 + '0';
+    frameAddColor(statsColorFrame, colorPair1, statsColorFrame->width -2, line, 1);
+    frameDraw(statsWin, statsFrame, statsColorFrame);
+    wrefresh(statsWin);
+    usleep(400000); // 250 ms
+    frameAddColor(statsColorFrame, colorPair2, statsColorFrame->width -2, line, 1);
+    frameDraw(statsWin, statsFrame, statsColorFrame);
+    wrefresh(statsWin);
+    usleep(400000); // 250 ms
+    frameAddColor(statsColorFrame, colorPair1, statsColorFrame->width -2, line, 1);
+    frameDraw(statsWin, statsFrame, statsColorFrame);
+    wrefresh(statsWin);
+    usleep(400000); // 250 ms
+    frameAddColor(statsColorFrame, colorPair2, statsColorFrame->width -2, line, 1);
+    frameDraw(statsWin, statsFrame, statsColorFrame);
+    wrefresh(statsWin);
+    usleep(400000); // 250 ms
+}
+
 void scoreAtt(FRAME *frameColor, LEVEL *level){
     int colorPair, squares;
     if(level->p1Score > 3)
-        colorPair = 5 + '0'; 
+        colorPair = 5 + '0';
     else if(level->p1Score > 1)
         colorPair = 12 + '0';
-    else 
+    else
         colorPair = 13 + '0';
     squares = level->p1Score*6;
     frameAddColor(frameColor, colorPair, squares, 5, 4);
@@ -86,10 +144,10 @@ void scoreAtt(FRAME *frameColor, LEVEL *level){
     frameAddColor(frameColor, colorPair, 30 - squares, 7, squares + 4);
 
      if(level->p2Score > 3)
-        colorPair = 5 + '0'; 
+        colorPair = 5 + '0';
     else if(level->p2Score > 1)
         colorPair = 12 + '0';
-    else 
+    else
         colorPair = 13 + '0';
     squares = level->p2Score*6;
     frameAddColor(frameColor, colorPair, squares, 30, 4);
@@ -103,21 +161,9 @@ void scoreAtt(FRAME *frameColor, LEVEL *level){
 }
 
 /*
-    Algum problema!!!
-*/
-FRAME *create_newframe(int wid, int hei){
-    FRAME *localFrame;
-
-    localFrame->width = wid;
-    localFrame->height = hei;
-    
-    return localFrame;
-}
-
-/*
     ARG = ponteiro para window, ponteiro para frame
         Função que também desenha o frame na tela, mas esse não é necessária um frame color.
-        Visto que que não é necessário pela quantidade de objetos diferentes que deve ser 
+        Visto que que não é necessário pela quantidade de objetos diferentes que deve ser
         tela.
 */
 void gameFrameDraw(WINDOW *localWin, FRAME *frame){
@@ -144,7 +190,7 @@ void gameFrameDraw(WINDOW *localWin, FRAME *frame){
             else
                 waddchColor(localWin, ' ', 1);
         }
-    }   
+    }
 }
 
 /*
@@ -153,7 +199,7 @@ void gameFrameDraw(WINDOW *localWin, FRAME *frame){
 */
 void homeDraw(WINDOW *localWin, FRAME *frame){
     int i, j;
-    
+
     wmove(localWin, 0, 0);
     for(i = 0; i < frame->height; i++){
         for(j = 0; j< frame->width; j++){
@@ -185,7 +231,7 @@ void homeDraw(WINDOW *localWin, FRAME *frame){
 */
 void frameDraw(WINDOW *localWin, FRAME *frame, FRAME *frameColor){
     int i, j;
-    
+
     wmove(localWin, 0, 0);
     for(i = 0; i < frame->height; i++){
         for(j = 0; j< frame->width; j++){
@@ -219,7 +265,7 @@ void frameDraw(WINDOW *localWin, FRAME *frame, FRAME *frameColor){
 
 void newBallTimeAtt(FRAME *frame, FRAME *frameColor, int newBallTime){
     int colorPair;
-    if(newBallTime > 5)
+    if(newBallTime > 8)
         colorPair = 1 + '0';
     else if(newBallTime > 3)
         colorPair = 9 + '0';
@@ -262,6 +308,9 @@ void configWindow(){
     clear();
     start_color(); //inicia terminal com cores
     keypad(stdscr, TRUE); //habilita setas direcionais e outras teclas de controle
+    // Dimunuindo o delay do ESC
+    if (getenv ("ESCDELAY") == NULL)
+        ESCDELAY = 128;
 
     init_pair(1, COLOR_WHITE, COLOR_BLACK); // Cor padrão
     init_pair(2, COLOR_WHITE, COLOR_GREEN); // Cor pad 1
@@ -277,6 +326,8 @@ void configWindow(){
     init_pair(12, COLOR_BLACK, COLOR_YELLOW);
     init_pair(13, COLOR_BLACK, COLOR_RED);
     init_pair(14, COLOR_RED, COLOR_BLACK);
+    init_pair(15, COLOR_BLACK, COLOR_GREEN);
+    init_pair(16, COLOR_BLACK, COLOR_BLUE);
 
     attrset(COLOR_PAIR(1));
 }
@@ -309,7 +360,7 @@ void frameAddNumber(FRAME *frame, int number, int squares, int line, int colum){
 }
 
 /*
-    ARG = pointeiro para frame, ponteiro de char que é a palavra, int linha do 
+    ARG = pointeiro para frame, ponteiro de char que é a palavra, int linha do
         frame, int coluna do frame
     Escreve uma palavra no frame, quebrando a linha se necessário
 */
@@ -326,7 +377,7 @@ void frameAddString(FRAME *frame, char *String, int line, int colum){
 }
 
 /*
-    ARG = pointeiro para frame, int número do par de cores, int quadrados, int linha do 
+    ARG = pointeiro para frame, int número do par de cores, int quadrados, int linha do
         frame, int coluna do frame
     Troca a cor do quadrado corrente do quadrado.
 */

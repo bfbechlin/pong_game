@@ -33,22 +33,19 @@ void loadMap(char barrerTable[MAP_HEIGHT][MAP_WIDTH], char* fileName){
     fclose(file);
 }
 
-void cpMaptoFrame(FRAME *frame, LEVEL level){
+void cpMaptoFrame(FRAME *frame, LEVEL *level){
     int i,j;
     for(i = 0; i < frame->height; i ++){
         for(j = 0; j < frame->width; j ++){
-            frame->src[i][j] = level.map[i][j];
+            frame->src[i][j] = level->map[i][j];
         }
     }
 }
 
 void loadLevel(LEVEL *level){
-    char mapPath[][12] = {"maps/0.txt", "maps/1.txt", "maps/2.txt", "maps/3.txt", "maps/4.txt"}; 
+    char mapPath[6][12] = {"LIXO", "maps/1.txt", "maps/2.txt", "maps/3.txt", "maps/4.txt", "maps/5.txt"};
     //level->mapCode = randNumber(NMAPS);
     switch(level->mapCode){
-        case 0:
-            loadMap(level->map, mapPath[4]);
-            break;
         case 1:
             loadMap(level->map, mapPath[1]);
             break;
@@ -56,38 +53,46 @@ void loadLevel(LEVEL *level){
             loadMap(level->map, mapPath[2]);
             break;
         case 3:
-            loadMap(level->map, mapPath[0]);
+            loadMap(level->map, mapPath[3]);
+            break;
+        case 4:
+            loadMap(level->map, mapPath[4]);
+            break;
+            break;
+        case 5:
+            loadMap(level->map, mapPath[5]);
             break;
         default:
-            loadMap(level->map, mapPath[3]);
+            loadMap(level->map, mapPath[1]);
             break;
         }
 }
 
-void increaseLevel(LEVEL *level, FRAME *frameStats, PADDLE *pad){            
-    if(level->mapCode == 4) //seleciona um novo mapa na ordem
-        level->mapCode = 0;
+void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PADDLE *pad){
+    if(level->mapCode >= 5) //seleciona um novo mapa na ordem
+        level->mapCode = 1;
     else level->mapCode++;
-    frameAddNumber(frameStats, level->mapCode, 2, 19, 7); //atualiza frameStats com o numero do novo mapa
+    frameAddNumber(statsFrame, level->mapCode, 1, 19, 7); //atualiza statsFrame com o numero do novo mapa
 
     if(level->dificult < 20) //aumenta o marcador do nivel de dificuldade
         level->dificult++;
-    frameAddNumber(frameStats, level->dificult, 3, 21, 12); //atualiza frameStats com o numero do novo nivel de dificuldade
+    frameAddNumber(statsFrame, level->dificult, 3, 21, 12); //atualiza statsFrame com o numero do novo nivel de dificuldade
 
     if(level->newBallTime > 10) //diminui o tempo para surgir novas bolas
-        level->newBallTime--;
-              
+        level->newBallTime -= 2;
+
     if(level->padP2Speed > 50) //aumenta taxa de atualizaçao do bot
         level->padP2Speed = level->padP2Speed - 0.5*level->dificult + 1;
-           
-    level->nBall =0; //configura os demais parametros
-    level->newBallCurrentTime = 3; 
-    level->p1Score = 5; 
-    level->p2Score = 5; 
-            
-    loadLevel(level); //carrega o novo nivel
-    //millis =0;
-            
+
+    level->nBall =0;
+    level->newBallCurrentTime = 3;
+    level->p1Score = 1;
+    level->p2Score = 5;
+
+    loadLevel(level); //carrega o mapa do novo nivel
+    cpMaptoFrame(gameFrame, level); //copia para o frame do jogo
+    ballNewLevel(ball); // Zera as bolas ativas
+
     // a cada 5 niveis de dificuldade reduz em um a largura do padP1
     if(level->dificult % 5 == 0)
         pad[1].len--;

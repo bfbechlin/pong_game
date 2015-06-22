@@ -48,7 +48,7 @@ typedef struct{
     int nBall;
     int newBallTime;
     int newBallCurrentTime;
-    
+
     int p1Score;
     int p2Score;
     int padP1Speed;
@@ -57,14 +57,14 @@ typedef struct{
 
 typedef struct{
 
-    char src[SCREEN_HEIGHT][SCREEN_WIDTH];
+    char **src;
     int width;
     int height;
 
 }FRAME;
 
 typedef struct{
-    
+
     char playerName[NAME_LEN];
     int recordLevel;
 

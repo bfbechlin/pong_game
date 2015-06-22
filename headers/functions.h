@@ -36,9 +36,11 @@ WINDOW *create_newwin(int, int, int, int);
 void waddchColor(WINDOW*, int, int);
 void scoreAtt(FRAME *, LEVEL *);
 void newBallTimeAtt(FRAME *, FRAME *, int);
+void blinkPlayer(WINDOW *, FRAME *, FRAME *, int);
 
 /* FRAME*/
-FRAME* create_newframe(int, int);
+FRAME *create_newframe(int, int);
+void delframe(FRAME *frame);
 void frameDraw(WINDOW *, FRAME*, FRAME*);
 void frameLoad(FRAME *, char *);
 void frameAddNumber(FRAME *, int, int, int, int);
@@ -48,9 +50,9 @@ void frameAddColor(FRAME *, int, int, int, int);
 
 // LEVEL
 void loadMap(char barrerTable[MAP_HEIGHT][MAP_WIDTH], char*);
-void cpMaptoFrame(FRAME*, LEVEL);
-void loadLevel(LEVEL *level);
-void increaseLevel(LEVEL *, FRAME*, PADDLE *);
+void cpMaptoFrame(FRAME*, LEVEL*);
+void loadLevel(LEVEL *);
+void newLevel(LEVEL *, FRAME*, FRAME*, BALL*, PADDLE *);
 
 // MODE
 void PVPinitGame();

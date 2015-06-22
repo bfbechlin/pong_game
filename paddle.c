@@ -8,13 +8,25 @@
     Controla o que deve ser realizado com pad, ou seja, testa se a tecla presionada é uma
         tecla que produz ação, realiza a verificação de colisão e desenha o pad no frame.
 */
-void padControl(PADDLE *dummy_pad, FRAME *frameGame, LEVEL *level, int ch){
-    // Chama a função que realiza a troca na velocidade do pad
-    padChVelocity(dummy_pad, KEY_LEFT, KEY_RIGHT, ch);
+void padControl(PADDLE *dummy_pad, BALL *dummy_ball, FRAME *frameGame, LEVEL *level, int ch){
+    if(dummy_pad->botMode == FALSE){
+        // Chama a função que realiza a troca na velocidade do pad
+        padChVelocity(dummy_pad, KEY_LEFT, KEY_RIGHT, ch);
+    }
+    else{
+        // Introduzindo erro aleatório
+        if(randBinary(0.9))
+            dummy_pad->velocity.x = 0;
+        // Chama a função que configura bot
+        else
+            botDecisionControl(dummy_pad, dummy_ball, level);
+
+    }
     // Chama a função que realiza verificação de choques
     padCollisionVerification(dummy_pad, frameGame);
     // Chama a função que escreve o pad no frame
-    padDraw(dummy_pad, frameGame, dummy_pad->charCode);    
+    padDraw(dummy_pad, frameGame, dummy_pad->charCode);
+
 }
 
 /*
@@ -85,10 +97,8 @@ int padKeyBoardControl(PADDLE* dummy_pad, int regressKey, int advanceKey, int ch
 }
 void padChVelocity(PADDLE* dummy_pad, int keyRegress, int keyAdvance, int ch){
     int velocity;
-    if(dummy_pad->botMode == FALSE){
-        if(dummy_pad->vertical == FALSE)
-            dummy_pad->velocity.x = padKeyBoardControl(dummy_pad, dummy_pad->advanceKey, dummy_pad->regressKey, ch);
-        else
-            dummy_pad->velocity.x = padKeyBoardControl(dummy_pad, dummy_pad->advanceKey, dummy_pad->regressKey, ch);
-    }
+    if(dummy_pad->vertical == FALSE)
+        dummy_pad->velocity.x = padKeyBoardControl(dummy_pad, dummy_pad->advanceKey, dummy_pad->regressKey, ch);
+    else
+        dummy_pad->velocity.y = padKeyBoardControl(dummy_pad, dummy_pad->advanceKey, dummy_pad->regressKey, ch);
 }

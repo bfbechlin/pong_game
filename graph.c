@@ -276,6 +276,20 @@ void newBallTimeAtt(FRAME *frame, FRAME *frameColor, int newBallTime){
         frameAddColor(frameColor, colorPair, 3, 22, 33);
     }
 }
+void modeGamewrite(FRAME* statsFrame, LEVEL* level){
+    if(level->mode == PvsB){
+        frameAddString(statsFrame, "PLAYER_vs_CPU", 23, 8);
+    }
+    else if(level->mode == PvsP){
+        frameAddString(statsFrame, "PLAYER_vs_PLAYER", 23, 8);
+    }
+    else if(level->mode == PvsP4){
+        frameAddString(statsFrame, "PLAYER_vs_PLAYER_4pads", 23, 8);
+    }
+    else if(level->mode == PvsB4){
+        frameAddString(statsFrame, "PLAYER_vs_CPU_4pads", 23, 8);
+    }
+}
 
 void frameLoad(FRAME *frame, char *fileName){
     FILE *file;
@@ -398,7 +412,7 @@ void debugTable(FRAME *frame, char* file){
     out = fopen(file, "w");
     for(i = 0; i < frame->height; i++){
         for(j=0; j < frame->width; j++){
-            fputc(frame->src[i][j], out);
+            fputc(frame->src[i][j] + '0', out);
         }
         fputc('\n', out);
     }

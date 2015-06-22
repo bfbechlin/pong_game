@@ -43,29 +43,9 @@ void cpMaptoFrame(FRAME *frame, LEVEL *level){
 }
 
 void loadLevel(LEVEL *level){
-    char mapPath[6][12] = {"LIXO", "maps/1.txt", "maps/2.txt", "maps/3.txt", "maps/4.txt", "maps/5.txt"};
-    //level->mapCode = randNumber(NMAPS);
-    switch(level->mapCode){
-        case 1:
-            loadMap(level->map, mapPath[1]);
-            break;
-        case 2:
-            loadMap(level->map, mapPath[2]);
-            break;
-        case 3:
-            loadMap(level->map, mapPath[3]);
-            break;
-        case 4:
-            loadMap(level->map, mapPath[4]);
-            break;
-            break;
-        case 5:
-            loadMap(level->map, mapPath[5]);
-            break;
-        default:
-            loadMap(level->map, mapPath[1]);
-            break;
-        }
+    char mapPath[12] = "maps/X.txt";
+    mapPath[5] = level->mapCode + '0';
+    loadMap(level->map, mapPath);
 }
 
 void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PADDLE *pad){
@@ -76,14 +56,14 @@ void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PAD
 
     if(level->dificult < 20) //aumenta o marcador do nivel de dificuldade
         level->dificult++;
-    frameAddNumber(statsFrame, level->dificult, 3, 21, 12); //atualiza statsFrame com o numero do novo nivel de dificuldade
+    frameAddNumber(statsFrame, level->dificult, 2, 21, 12); //atualiza statsFrame com o numero do novo nivel de dificuldade
 
     if(level->newBallTime > 10) //diminui o tempo para surgir novas bolas
         level->newBallTime -= 2;
 
-    if(level->padP2Speed > 50) //aumenta taxa de atualizaçao do bot
-        level->padP2Speed = level->padP2Speed - 0.5*level->dificult + 1;
-
+    // Inicia em 0.15 e decai exponencialmente até 0.02 em 15 aproximadamente
+    if(level->errorProb > 0.02)
+        level->errorProb = pow(0.99, level->dificult) - 0.84;
     level->nBall =0;
     level->newBallCurrentTime = 3;
     level->p1Score = 1;
@@ -96,4 +76,6 @@ void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PAD
     // a cada 5 niveis de dificuldade reduz em um a largura do padP1
     if(level->dificult % 5 == 0)
         pad[1].len--;
+    if(pad[1].speed > 50) //aumenta taxa de atualizaçao do bot
+        pad[1].speed = pad[1].speed - 0.5*level->dificult + 1;
 }

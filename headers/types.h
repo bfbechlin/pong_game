@@ -28,12 +28,18 @@ typedef struct{
 
     COORD position;
     COORD velocity;
+
     unsigned int len;
+
     char charCode;
+
     BOOL botMode;
     BOOL vertical;
+
     int advanceKey;
     int regressKey;
+
+    int speed;
 
 }PADDLE;
 
@@ -42,6 +48,7 @@ typedef struct{
     char map[MAP_HEIGHT][MAP_WIDTH];
     char mapCode;
     int dificult;
+    float errorProb;
     int mode;
 
     int nPad;
@@ -51,8 +58,7 @@ typedef struct{
 
     int p1Score;
     int p2Score;
-    int padP1Speed;
-    int padP2Speed;
+
 }LEVEL;
 
 typedef struct{

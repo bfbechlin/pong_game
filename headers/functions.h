@@ -17,14 +17,13 @@ void ballDel(BALL *, FRAME *, LEVEL *);
 void padAttPos(PADDLE*);
 void padCollisionVerification(PADDLE*, FRAME*);
 void padDraw(PADDLE*, FRAME*, int);
-void padControl(PADDLE*, FRAME*, LEVEL*, int);
+void padControl(PADDLE*, BALL*, FRAME*, LEVEL*, int);
 int padKeyBoardControl(PADDLE*, int, int, int);
 void padChVelocity(PADDLE*, int, int, int);
 
 //BOT
 BALL testBallDistance(BALL*, PADDLE*);
 void botDecisionControl(PADDLE*, BALL*, LEVEL*);
-void controlBotPaddle(PADDLE*, BALL*, FRAME*, LEVEL*);
 
 // GRAPH
 void gameFrameDraw(WINDOW*, FRAME*);

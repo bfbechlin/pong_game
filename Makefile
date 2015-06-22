@@ -1,10 +1,10 @@
 CC=gcc
-CFLAGS=-c 
+CFLAGS=-c
 
 all: build
 
 build: main.o ball.o paddle.o level.o graph.o config.o mode.o ranmar.o bot.o
-	$(CC) main.o ball.o paddle.o level.o graph.o config.o mode.o ranmar.o bot.o -o pong -lncurses
+	$(CC) main.o ball.o paddle.o level.o graph.o config.o mode.o ranmar.o bot.o -o pong -lncurses -lm
 
 main.o: main.c
 	$(CC) $(CFLAGS) main.c
@@ -17,7 +17,7 @@ paddle.o: paddle.c
 
 level.o: level.c
 	$(CC) $(CFLAGS) level.c
-	
+
 graph.o: graph.c
 	$(CC) $(CFLAGS) graph.c
 
@@ -35,4 +35,3 @@ bot.o: bot.c
 
 clean:
 	rm *o pong
-

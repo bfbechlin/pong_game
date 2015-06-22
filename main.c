@@ -7,6 +7,9 @@ int main(){
     // Configurações gerais da ncurses, bem como cores do terminal
     configWindow();
 
+    // Gerando as seed para os números randomicos
+	seedGen();
+
     /* Criando janelas */
     PosX = (COLS - MENU_WIDTH)/2;
     PosY = (LINES - MENU_HEIGHT)/2;
@@ -33,7 +36,7 @@ int main(){
     	        CPUinitGame();
                 break;
             case 2:
-                PVPinitGame();
+                //PVPinitGame();
                 break;
             case 3:
                 break;

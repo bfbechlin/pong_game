@@ -22,5 +22,5 @@ int randNumber(int n){
 	ranmar1_(&random);
 
 	// Tornando o número random entre [1, n+1)
-	return n*random + 1;
+	return (int)(n*random + 1);
 }

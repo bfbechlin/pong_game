@@ -40,27 +40,27 @@
 	Aqui estão descritos a codificação para os blocos usados.
 	Ou seja, todos o objetos munidos de movimentação ou não,
 		estão tem um código para ser identificado e a seguir
-		está descrito cada um deles. 
+		está descrito cada um deles.
 */
 // ITEM VAZIO
 #define VOID_BLOCK 0
 
+// BOLA
+#define BALL_BLOCK 1
+
 // PADS (horizontais e verticais)
 /* 	Também é importante saber que o menor indice é o mais perto
-		da origem do sitema de coordenadas. Por exemplo, o 
+		da origem do sitema de coordenadas. Por exemplo, o
 		PAD1_H é a plataforma de cima visto que está mais próximo
 		de y = 0;
 */
-#define PAD1H_BLOCK 1
-#define	PAD2H_BLOCK 2
-#define PAD1V_BLOCK 3
-#define	PAD2V_BLOCK 4
+#define PAD1H_BLOCK 2
+#define	PAD2H_BLOCK 3
+#define PAD1V_BLOCK 4
+#define	PAD2V_BLOCK 5
 
 // BARREIRAS
-#define BARRIER_BLOCK 5
-
-// BOLA
-#define BALL_BLOCK 6
+#define BARRIER_BLOCK 6
 
 // PAREDES Inicial 20
 #define TOP_BLOCK 20
@@ -68,6 +68,9 @@
 #define LEFT_BLOCK 22
 #define RIGHT_BLOCK 23
 #define CORNER_BLOCK 24
+
+#define SHIFT_PAD 2
+
 // ****
 
 // **PROTOCOLO PARA A ESTRUTURA LEVEL **
@@ -92,12 +95,6 @@
 // TECLAS
 #define ESC 27
 #define ENTER 10
-
-// CORES
-#define RED 1
-#define GREEN  2
-#define BLACK 3
-#define WHITE 4
 
 // **PROTOCOLO PARA A ESTRUTURA RECORDE **
 // NUMERO MAXIMO DE CARACTERES DO NOME DO JOGADOR

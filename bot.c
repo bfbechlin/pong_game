@@ -1,13 +1,13 @@
 #include "./headers/header.h"
 
 /* testBallDistance recebe um array com as bolas em jogo, e a instancia de PADDLE do bot.
-   Calcula a distancia entre todas as bolas e o pad e retorna a instancia de BALL mais proxima */ 
+   Calcula a distancia entre todas as bolas e o pad e retorna a instancia de BALL mais proxima */
 BALL testBallDistance(BALL *dummy_ball, PADDLE *botPad){
     int i=0;
     float distance, closerDist=80*80;
     BALL closerBall = {.position.x = (MAP_WIDTH/2), .position.y = (MAP_HEIGHT/2)}; //Atribui a closerBall uma bola imaginaria parada no centro do mapa
-    
-    if(botPad->vertical == FALSE){ 
+
+    if(botPad->vertical == FALSE){
         for(i=0; i < MAXBALL; i++){
             if(dummy_ball[i].enabled == TRUE && dummy_ball[i].velocity.y == -1){
                 distance = (dummy_ball[i].position.x - (botPad->position.x + botPad->len/2))*(dummy_ball[i].position.x - (botPad->position.x + botPad->len/2)) + (dummy_ball[i].position.y - botPad->position.y)*(dummy_ball[i].position.y - botPad->position.y);
@@ -20,7 +20,7 @@ BALL testBallDistance(BALL *dummy_ball, PADDLE *botPad){
     }
     else{
         for(i=0; i < MAXBALL; i++){
-            if(dummy_ball[i].enabled == TRUE && dummy_ball[i].velocity.y == -1){    
+            if(dummy_ball[i].enabled == TRUE && dummy_ball[i].velocity.y == -1){
                 distance = (dummy_ball[i].position.y - (botPad->position.y + botPad->len/2))*(dummy_ball[i].position.y - (botPad->position.y + botPad->len/2)) + (dummy_ball[i].position.x - botPad->position.x)*(dummy_ball[i].position.x - botPad->position.x);
                 if(distance < closerDist){
                     closerDist = distance;
@@ -29,7 +29,7 @@ BALL testBallDistance(BALL *dummy_ball, PADDLE *botPad){
             }
         }
     }
-       
+
     return closerBall;
 }
 
@@ -39,7 +39,7 @@ void botDecisionControl(PADDLE *botPad, BALL *dummy_ball, LEVEL *level){
 
     if(botPad->botMode == TRUE){
         closerBall = testBallDistance(dummy_ball, botPad);
-        
+
         if(botPad->vertical == FALSE){
             if((botPad->position.x + botPad->len/2) > closerBall.position.x)
                 botPad->velocity.x = -1; //botPad está mais a direita da bola, então deve andar para esquerda(-1)
@@ -58,10 +58,3 @@ void botDecisionControl(PADDLE *botPad, BALL *dummy_ball, LEVEL *level){
                 botPad->velocity.y = 0; //botPad está alinhado com a bola, então deve ficar parado(0)
         }
 } 
-/* controlBotPaddle() recebe um PADDLE que será o bot, um array de BALL com as bolas em jogo, um FRAME e um LEVEL, 
-   e controla a movimentação do bot, verifica as colisões e desenha o pad na nova posição */
-void controlBotPaddle(PADDLE *botPad, BALL *dummy_ball,  FRAME *frameGame, LEVEL *level){
-    botDecisionControl(botPad, dummy_ball, level);
-    padCollisionVerification(botPad, frameGame);
-    padDraw(botPad, frameGame, botPad->charCode);
-}

@@ -418,3 +418,42 @@ void debugTable(FRAME *frame, char* file){
     }
     fclose(out);
 }
+
+int compareRecord(LEVEL *level){
+    FILE *arq;
+    RECORD bufferRecord;
+
+    if(arq = fopen("record", "rb")){
+        if(fread(&bufferRecord, sizeof(RECORD), 1, arq)){;
+            fclose(arq);
+            if(level->dificult > bufferRecord.recordLevel)
+                return TRUE;
+            else return FALSE;
+        }
+    }
+}
+
+void changeRecord(LEVEL *level){
+    FILE *arq;
+    RECORD bufferRecord;
+    WINDOW *recordWin;
+    char msg[] = "Entre com seu nome: ";
+    
+    echo();
+    nocbreak();
+
+    recordWin = create_newwin(10, 30+strlen(msg), (LINES - 10)/2, (COLS - 30)/2); //cria uma janela no meio da tela
+    mvwprintw(recordWin, 4, (30 - strlen(msg))/2, "%s", msg); //escreve msg no meio da janela
+    wrefresh(recordWin);
+    wgetstr(recordWin, bufferRecord.playerName); //espera entrada do nome do jogador
+    
+    bufferRecord.recordLevel = level->dificult; 
+
+    if(arq = fopen("record", "wb"))
+        fwrite(&bufferRecord, sizeof(RECORD), 1, arq);
+
+    fclose(arq);
+    noecho();
+    cbreak();
+    delwin(recordWin);
+}

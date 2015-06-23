@@ -39,6 +39,7 @@ int main(){
                 //PVPinitGame();
                 break;
             case 3:
+                showRecord();
                 break;
             case 4:
                 break;

@@ -49,10 +49,16 @@ void loadLevel(LEVEL *level){
 }
 
 void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PADDLE *pad){
+    FILE *arq;
+    RECORD bufferRecord;
+
+    if(arq = fopen("record", "rb"))
+        fread(&bufferRecord, sizeof(RECORD), 1, arq);
+    frameAddNumber(statsFrame, bufferRecord.recordLevel, 2, 19, 11); //atualiza statsFrame com recorde atual
+    
     if(level->mapCode >= 5) //seleciona um novo mapa na ordem
         level->mapCode = 1;
     else level->mapCode++;
-    frameAddNumber(statsFrame, level->mapCode, 1, 19, 7); //atualiza statsFrame com o numero do novo mapa
 
     if(level->dificult < 20) //aumenta o marcador do nivel de dificuldade
         level->dificult++;
@@ -66,7 +72,7 @@ void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PAD
         level->errorProb = pow(0.99, level->dificult) - 0.84;
     level->nBall =0;
     level->newBallCurrentTime = 3;
-    level->p1Score = 1;
+    level->p1Score = 5;
     level->p2Score = 5;
 
     loadLevel(level); //carrega o mapa do novo nivel
@@ -76,6 +82,6 @@ void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PAD
     // a cada 5 niveis de dificuldade reduz em um a largura do padP1
     if(level->dificult % 5 == 0)
         pad[1].len--;
-    if(pad[1].speed > 50) //aumenta taxa de atualizaçao do bot
-        pad[1].speed = pad[1].speed - 0.5*level->dificult + 1;
+    if(pad[0].speed > 50) //aumenta taxa de atualizaçao do bot
+        pad[0].speed = pad[0].speed - 0.5*level->dificult + 1;
 }

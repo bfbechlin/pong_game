@@ -36,6 +36,8 @@ void waddchColor(WINDOW*, int, int);
 void scoreAtt(FRAME *, LEVEL *);
 void newBallTimeAtt(FRAME *, FRAME *, int);
 void blinkPlayer(WINDOW *, FRAME *, FRAME *, int);
+int compareRecord(LEVEL*);
+void changeRecord(LEVEL*);
 
 /* FRAME*/
 FRAME *create_newframe(int, int);
@@ -56,6 +58,7 @@ void newLevel(LEVEL *, FRAME*, FRAME*, BALL*, PADDLE *);
 // MODE
 void PVPinitGame();
 void CPUinitGame();
+void showRecord();
 
 // CONFIG
 void seedGen();

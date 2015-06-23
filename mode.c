@@ -28,7 +28,7 @@ void CPUinitGame(){
 		};
 	// Iniciando LEVEL
 	LEVEL level = {.dificult = 0, .mapCode = 0, .mode = PvsB, .errorProb = 0.2, .nPad = 2, .nBall =0, .newBallTime = 30,
-		.newBallCurrentTime = 3, .p1Score = 1, .p2Score = 5};
+		.newBallCurrentTime = 3, .p1Score = 1, .p2Score = 1};
 
 	// GRÁFICA
 	// Iniciando janelas
@@ -91,7 +91,14 @@ void CPUinitGame(){
             attGame = TRUE;
             attStats = TRUE;
         }
-
+        
+        if(level.p2Score < 1){
+            //PLAYER PERDEU - COMPARA NIVEL COM O RECORDE ATUAL E MODIFICA, OU VOLTA PARA O MENU 
+			blinkPlayer(statsWin, statsFrame, statsColorFrame, 2);
+            if(compareRecord(&level))
+                changeRecord(&level);
+            ch = ESC; //Força saida para o menu
+        }
 
         if(attGame == TRUE){
         	gameFrameDraw(mainWin, gameFrame);
@@ -115,4 +122,25 @@ void CPUinitGame(){
 
 void PVPinitGame(){
 	//Atualizar
+}
+
+void showRecord(){
+    FILE *arq;
+    WINDOW *recordWin;
+    RECORD bufferRecord;
+    int ch = 0;
+    
+    recordWin = create_newwin(10, 50, (LINES-10)/2, (COLS-50)/2);
+    
+    while(ch != ESC){
+        if(arq = fopen("record", "rb")){
+            fread(&bufferRecord, sizeof(RECORD), 1, arq);
+            mvwprintw(recordWin, 4, (50-strlen(bufferRecord.playerName)-6)/2, "NOME: %s", bufferRecord.playerName);
+            mvwprintw(recordWin, 5, 20, "LEVEL: %d", bufferRecord.recordLevel);
+            wrefresh(recordWin);
+        }
+        ch = wgetch(recordWin);
+    }
+    fclose(arq);
+    delwin(recordWin);
 }

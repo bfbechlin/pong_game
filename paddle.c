@@ -15,7 +15,7 @@ void padControl(PADDLE *dummy_pad, BALL *dummy_ball, FRAME *frameGame, LEVEL *le
     }
     else{
         // Introduzindo erro aleatório
-        if(randBinary(0.9)<level->errorProb)
+        if(randBinary(level->errorProb))
             dummy_pad->velocity.x = 0;
         // Chama a função que configura bot
         else

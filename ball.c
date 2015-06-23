@@ -114,7 +114,7 @@ void ballDel(BALL *dummy_ball, FRAME *frameGame, LEVEL *level){
 */
 int ballCollisionVerification(BALL *dummy_ball, FRAME *frameGame){
     int block;
-    int ch;
+
     if((block = frameGame->src[dummy_ball->position.y + dummy_ball->velocity.y]
     [dummy_ball->position.x]) > BALL_BLOCK){
         dummy_ball->velocity.y *= -1;
@@ -122,10 +122,12 @@ int ballCollisionVerification(BALL *dummy_ball, FRAME *frameGame){
         if(frameGame->src[dummy_ball->position.y]
         [dummy_ball->position.x + dummy_ball->velocity.x] > BALL_BLOCK){
             dummy_ball->velocity.x *= -1;
-            // Ocorre em menor qtd, logo não é atribuido a uma variável
-            debugTable(frameGame, "coll.txt");
-            return frameGame->src[dummy_ball->position.y + dummy_ball->velocity.y]
-            [dummy_ball->position.x + dummy_ball->velocity.x];
+            // Cuidar que as velocidades já foram atualizadas então deve-se diminuir
+            //  para ter o efeito de somar as velocidades anteriores. Assim, é possível
+            //  encontrar o block diagonal onde houve a colisão
+            block = frameGame->src[dummy_ball->position.y - dummy_ball->velocity.y]
+            [dummy_ball->position.x - dummy_ball->velocity.x];
+            return block;
         }
         return block;
     }

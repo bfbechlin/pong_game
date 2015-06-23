@@ -36,7 +36,7 @@ int main(){
     	        CPUinitGame();
                 break;
             case 2:
-                //PVPinitGame();
+                PVPinitGame();
                 break;
             case 3:
                 showRecord();

@@ -69,6 +69,12 @@ void padCollisionVerification(PADDLE *dummy_pad, FRAME *frameGame){
             dummy_pad->velocity.y = 0;
     }
 }
+
+/*
+    ARG = ponteiro para UM pad, ponteiro para um FRAME, inteiro com o tipo caracter do PADDLE
+    RET/MOD = desenha o pad no FRAME
+    Desenha o PADDLE no frame conforme o carater informa
+*/
 void padDraw(PADDLE *dummy_pad, FRAME *frameGame, int charCode){
     int i;
     if(dummy_pad->vertical == FALSE){
@@ -87,6 +93,11 @@ void padDraw(PADDLE *dummy_pad, FRAME *frameGame, int charCode){
     }
 }
 
+/*
+    ARG = ponteiro para UM pad, inteiro com a tecla de avanço, inteiro com a tecla de retorno, inteiro a tecla pressionada
+    RET/MOD = um inteiro com a nova velocidade do PADDLE
+    Dado um PADDLE e suas teclas de controle, compara o a tecla pressionada e retorna a nova velocidade do PADDLE
+*/
 int padKeyBoardControl(PADDLE* dummy_pad, int regressKey, int advanceKey, int ch){
     if(ch == regressKey)
         return -1;
@@ -95,6 +106,12 @@ int padKeyBoardControl(PADDLE* dummy_pad, int regressKey, int advanceKey, int ch
     else
         return 0;
 }
+
+/*
+    ARG = ponteiro para UM pad, inteiro com a tecla de avanço, inteiro com a tecla de retorno, inteiro a tecla pressionada
+    RET/MOD = modifica o PADDLE com sua nova velocidade
+    Dado um PADDLE e suas teclas de controle, chama padKeyBoardControl e modifica a velocidade do PADDLE de acordo
+*/
 void padChVelocity(PADDLE* dummy_pad, int keyRegress, int keyAdvance, int ch){
     int velocity;
     if(dummy_pad->vertical == FALSE)

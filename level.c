@@ -81,10 +81,12 @@ void loadLevel(LEVEL *level){
 */
 void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PADDLE *pad){
     FILE *arq;
-    RECORD bufferRecord;
+    RECORD bufferRecord = {.recordLevel = 0, .playerName = " "};
 
-    if(arq = fopen("record", "rb"))
+    if(arq = fopen("record", "rb")){
         fread(&bufferRecord, sizeof(RECORD), 1, arq);
+        fclose(arq);
+    }
     frameAddNumber(statsFrame, bufferRecord.recordLevel, 2, 19, 11); //atualiza statsFrame com recorde atual
     
     if(level->mapCode >= 5) //seleciona um novo mapa na ordem

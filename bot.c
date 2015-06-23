@@ -1,6 +1,7 @@
 #include "./headers/header.h"
 
-/* testBallDistance recebe um array com as bolas em jogo, e a instancia de PADDLE do bot.
+/* ARG = ponteiro para vetor bola, ponteiro para PADDLE de bot
+   RET/MOD = retorna um tipo BALL
    Calcula a distancia entre todas as bolas e o pad e retorna a instancia de BALL mais proxima */
 BALL testBallDistance(BALL *dummy_ball, PADDLE *botPad){
     int i=0;
@@ -33,7 +34,9 @@ BALL testBallDistance(BALL *dummy_ball, PADDLE *botPad){
     return closerBall;
 }
 
-/* botDecisionControl() recebe um PADDLE que será o bot, um array de BALL com as bolas em jogo, e um LEVEL, decide se o bot irá mover para esquerda ou direita comparando sua posição com a bola mais próxima */
+/* ARG = ponteiro para PADDLE de bot, ponteiro para vetor bola, ponteiro para LEVEL
+   RET/MOD = modifica as propriedades do PADDLE de bot 
+   botDecisionControl() decide se o bot irá mover para esquerda ou direita comparando sua posição com a bola mais próxima */
 void botDecisionControl(PADDLE *botPad, BALL *dummy_ball, LEVEL *level){
     BALL closerBall;
 

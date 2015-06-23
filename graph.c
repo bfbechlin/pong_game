@@ -1,5 +1,8 @@
 #include "./headers/header.h"
 
+/* ARG = ponteiro para uma WINDOW
+   RET/MOD = retorna um inteiro
+   configMenu() organiza o menu inicial e retorna um inteiro dependendo da escolha marcada com o highlight */ 
 int configMenu(WINDOW *menuWin){
     int selected=1;
     int choice=0;
@@ -42,6 +45,9 @@ int configMenu(WINDOW *menuWin){
     return choice;
 }
 
+/* ARG = ponteiro para WINDOW, um inteiro para marcar opçao realcada, um vetor de strings com as opcçoes do menu e um inteiro com o numero de opções
+   RET/MOD = modifica o menu para realçar a opção marcada
+   printMenu() escreve o menu na tela realçando uma opção selecionada e reescrevendo todas as outras normalmente */ 
 void printMenu(WINDOW *menuWin, int selected, char *opt[], int numOpt){
     int textPosX=2, textPosY=2, i;
 
@@ -57,7 +63,9 @@ void printMenu(WINDOW *menuWin, int selected, char *opt[], int numOpt){
     }
     wrefresh(menuWin);
 }
-
+/* ARG = inteiro com altura de WINDOW, int com a largura de WINDOW, int com a posição inicial em y de WINDOW e int com a poisção incial em x de WINDOW
+   MOD/RET = retorna um tipo WINDOW
+   create_newwin() recebe os atributos da nova janela, reserva o seu espaço em memoria com newwin e imprime na tela um esboço da janela */ 
 WINDOW *create_newwin(int height, int width, int starty, int startx){
     WINDOW *localWin;
 
@@ -103,6 +111,9 @@ void delframe(FRAME *frame){
 	free(frame);
 }
 
+/* ARG = um tipo WINDOW, ponteiro para FRAME de stats, ponteiro para FRAME de statsColor e um inteiro com o numero do jogador
+   MOD/RET = modifica o FRAME statsColor
+   blinkPlayer() recebe os atributos da nova janela, reserva o seu espaço em memoria com newwin e imprime na tela um esboço da janela */ 
 void blinkPlayer(WINDOW *statsWin, FRAME *statsFrame, FRAME *statsColorFrame, int player){
     int line, colorPair1, colorPair2;
     line = (player - 1)*25 + 1;
@@ -126,6 +137,9 @@ void blinkPlayer(WINDOW *statsWin, FRAME *statsFrame, FRAME *statsColorFrame, in
     usleep(400000); // 250 ms
 }
 
+/* ARG = ponteiro para FRAME de statsColor e um ponteiro para LEVEL
+   MOD/RET = modifica o FRAME statsColor
+   scoreAtt() controla os blocos de vida de cada jogar. Controla tanto o numero de blocos, quanto a sua cor */
 void scoreAtt(FRAME *frameColor, LEVEL *level){
     int colorPair, squares;
     if(level->p1Score > 3)
@@ -263,6 +277,12 @@ void frameDraw(WINDOW *localWin, FRAME *frame, FRAME *frameColor){
     }
 }
 
+/*
+    ARG = ponteiro para FRAME, ponteiro para FRAME de frameColor, e int com o tempo para gerar uma nova bola
+    MOD/RET = modifica o FRAME
+    Função que também desenha o frame na tela, mas esse não é necessária um frame color.
+    Visto que que não é necessário pela quantidade de objetos diferentes que deve ser tela.
+*/
 void newBallTimeAtt(FRAME *frame, FRAME *frameColor, int newBallTime){
     int colorPair;
     if(newBallTime > 8)
@@ -276,6 +296,10 @@ void newBallTimeAtt(FRAME *frame, FRAME *frameColor, int newBallTime){
         frameAddColor(frameColor, colorPair, 3, 22, 33);
     }
 }
+
+/* ARG = ponteiro para FRAME, ponteiro para LEVEL
+   RET/MOD = modifica FRAME
+   modeGameWrite() escreve no frame o modo de jogo escolhido */
 void modeGamewrite(FRAME* statsFrame, LEVEL* level){
     if(level->mode == PvsB){
         frameAddString(statsFrame, "PLAYER_vs_CPU", 23, 8);
@@ -291,6 +315,9 @@ void modeGamewrite(FRAME* statsFrame, LEVEL* level){
     }
 }
 
+/* ARG = ponteiro para FRAME, string com nome do arquivo de frame
+   RET/MOD = modifica FRAME
+   frameLoad() escreve no frame as informações contidas no arquivo de texto informado. O arquivo contem os caracteres especificos para criar a tela de jogo */
 void frameLoad(FRAME *frame, char *fileName){
     FILE *file;
     char c;
@@ -419,31 +446,41 @@ void debugTable(FRAME *frame, char* file){
     fclose(out);
 }
 
+/* ARG = ponteiro para LEVEL
+   RET/MOD = retorna um int
+   comparaRecord() carrega busca no level qual o nivel de dificuldade atual e compara com o valor salvo no arquivo binario "record".
+   Se o valor do nivel for maior retorna 1, senao retorna 0 */  
 int compareRecord(LEVEL *level){
     FILE *arq;
-    RECORD bufferRecord;
+    RECORD bufferRecord = {.playerName = " ", .recordLevel = 0};
 
     if(arq = fopen("record", "rb")){
-        if(fread(&bufferRecord, sizeof(RECORD), 1, arq)){;
-            fclose(arq);
-            if(level->dificult > bufferRecord.recordLevel)
-                return TRUE;
-            else return FALSE;
-        }
+        fread(&bufferRecord, sizeof(RECORD), 1, arq);
+        fclose(arq);
     }
+    if(level->dificult > bufferRecord.recordLevel)
+        return TRUE;
+    else return FALSE;
+        
+    
 }
 
+/* ARG = ponteiro para LEVEL
+   RET/MOD = modifica o arquivo binario "record"
+   changeRecord() primeiramente cria um nova janela para ler as informações do jogador, após salva o novo RECORD no arquivo binario */  
 void changeRecord(LEVEL *level){
     FILE *arq;
     RECORD bufferRecord;
     WINDOW *recordWin;
     char msg[] = "Entre com seu nome: ";
+    char rec[] = "NOVO RECORDE!";
     
     echo();
     nocbreak();
 
     recordWin = create_newwin(10, 30+strlen(msg), (LINES - 10)/2, (COLS - 30)/2); //cria uma janela no meio da tela
-    mvwprintw(recordWin, 4, (30 - strlen(msg))/2, "%s", msg); //escreve msg no meio da janela
+    mvwprintw(recordWin, 4, (30+strlen(msg)-strlen(rec))/2, "%s", rec); //escreve msg no meio da janela
+    mvwprintw(recordWin, 5, (30 - strlen(msg))/2, "%s", msg); //escreve msg no meio da janela
     wrefresh(recordWin);
     wgetstr(recordWin, bufferRecord.playerName); //espera entrada do nome do jogador
     

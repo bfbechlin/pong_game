@@ -246,7 +246,7 @@ void PVPinitGame(){
 void showRecord(){
     FILE *arq;
     WINDOW *recordWin;
-    RECORD bufferRecord;
+    RECORD bufferRecord = {.playerName = " ", .recordLevel = 0};
     int ch = 0;
     
     recordWin = create_newwin(10, 50, (LINES-10)/2, (COLS-50)/2);
@@ -254,12 +254,13 @@ void showRecord(){
     while(ch != ESC){
         if(arq = fopen("record", "rb")){
             fread(&bufferRecord, sizeof(RECORD), 1, arq);
-            mvwprintw(recordWin, 4, (50-strlen(bufferRecord.playerName)-6)/2, "NOME: %s", bufferRecord.playerName);
-            mvwprintw(recordWin, 5, 20, "LEVEL: %d", bufferRecord.recordLevel);
-            wrefresh(recordWin);
+            fclose(arq);
         }
+        mvwprintw(recordWin, 4, (50-strlen(bufferRecord.playerName)-6)/2, "NOME: %s", bufferRecord.playerName);
+        mvwprintw(recordWin, 5, 20, "LEVEL: %d", bufferRecord.recordLevel);
+        wrefresh(recordWin);
+        
         ch = wgetch(recordWin);
     }
-    fclose(arq);
     delwin(recordWin);
 }

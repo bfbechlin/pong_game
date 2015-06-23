@@ -1,5 +1,13 @@
 #include "./headers/header.h"
 
+/*
+    ARG = ponteiro para uma tabela de barreiras, string nome do arquivo
+    Realiza o load do mapa substituindo os caracteres para o padrão usado
+        nos frames.
+    Usado somente para carregar o mapa para estrutura level, devido ao projeto
+        usar frames então no level só disponível o mapa do jogo sem outros
+        objetos
+*/
 void loadMap(char barrerTable[MAP_HEIGHT][MAP_WIDTH], char* fileName){
     FILE *file;
 	char c;
@@ -33,6 +41,11 @@ void loadMap(char barrerTable[MAP_HEIGHT][MAP_WIDTH], char* fileName){
     fclose(file);
 }
 
+/*
+    ARG = ponteiro para FRAME, ponteiro para LEVEL
+    Copia o mapa disponível na estrutura level para a estrutura de frame que
+        posteriamente será impresso na tela
+*/
 void cpMaptoFrame(FRAME *frame, LEVEL *level){
     int i,j;
     for(i = 0; i < frame->height; i ++){
@@ -42,12 +55,30 @@ void cpMaptoFrame(FRAME *frame, LEVEL *level){
     }
 }
 
+/*
+    ARG = ponteiro para LEVEL
+    Realiza o conversão do código do mapa do jogo para o caminho em que se
+        encontra esse mapa e então já carrega esse mapa para o LEVEL
+*/
 void loadLevel(LEVEL *level){
     char mapPath[12] = "maps/X.txt";
     mapPath[5] = level->mapCode + '0';
     loadMap(level->map, mapPath);
 }
 
+/*
+    ARG = ponteiro para LEVEL, ponteiro para FRAME do status do jogo, ponteiro para
+    FRAME de jogo, ponteiro para todas as bolas, ponteiro para todos pads
+    Realiza todos loads e cálculos necessário para regular dificuldade além de
+        atualizar já o frame do status com as novas informações do jogo.
+    Cálculos:
+        Troca o mapa de jogo
+        Aumenta dificuldade
+        Dimunui o tempo respawn de novas bolas
+        Diminui exponencialmente a probabilidade de erro do BOT
+        Aumenta velocidade do BOT
+        Diminui o pad do player
+*/
 void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PADDLE *pad){
     if(level->mapCode >= 5) //seleciona um novo mapa na ordem
         level->mapCode = 1;
@@ -61,7 +92,7 @@ void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PAD
     if(level->newBallTime > 10) //diminui o tempo para surgir novas bolas
         level->newBallTime -= 2;
 
-    // Inicia em 0.15 e decai exponencialmente até 0.02 em 15 aproximadamente
+    // Inicia em 0.15 e decai exponencialmente até 0.02 na dificuldade 15 aproximadamente
     if(level->errorProb > 0.02)
         level->errorProb = pow(0.99, level->dificult) - 0.84;
     level->nBall =0;

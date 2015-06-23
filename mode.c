@@ -20,11 +20,11 @@ void CPUinitGame(){
 	PADDLE pad[2] = {
 		{.position.x = (MAP_WIDTH - 20)/2, .position.y = 1, .velocity.x = 0,
 		.velocity.y = 0, .len = 20, .charCode = PAD1H_BLOCK, .botMode = TRUE, .vertical = FALSE,
-		.advanceKey = 'a', .regressKey = 'd', .speed = 110},
+		.advanceKey = 'a', .regressKey = 'd', .speed = 100},
 
 		{.position.x = (MAP_WIDTH - 20)/2, .position.y = MAP_HEIGHT-2, .velocity.x = 0,
 		.velocity.y = 0, .len = 20, .charCode = PAD2H_BLOCK, .botMode = FALSE, .vertical = FALSE,
-		.advanceKey = KEY_LEFT, .regressKey = KEY_RIGHT, .speed = 20}
+		.advanceKey = KEY_LEFT, .regressKey = KEY_RIGHT, .speed = 25}
 		};
 	// Iniciando LEVEL
 	LEVEL level = {.dificult = 0, .mapCode = 0, .mode = PvsB, .errorProb = 0.2, .nPad = 2, .nBall =0, .newBallTime = 30,

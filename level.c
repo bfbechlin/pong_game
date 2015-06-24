@@ -81,28 +81,30 @@ void loadLevel(LEVEL *level){
 */
 void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PADDLE *pad){
     FILE *arq;
+    FILE *file;
+    char str[50];
     RECORD bufferRecord = {.recordLevel = 0, .playerName = " "};
+    file = fopen("diff.txt", "a");
 
     if(arq = fopen("record", "rb")){
         fread(&bufferRecord, sizeof(RECORD), 1, arq);
         fclose(arq);
     }
-    frameAddNumber(statsFrame, bufferRecord.recordLevel, 2, 19, 11); //atualiza statsFrame com recorde atual
-    
+    frameAddNumber(statsFrame, bufferRecord.recordLevel, 2, 19, 10); //atualiza statsFrame com recorde atual
+
     if(level->mapCode >= 5) //seleciona um novo mapa na ordem
         level->mapCode = 1;
     else level->mapCode++;
 
-    if(level->dificult < 20) //aumenta o marcador do nivel de dificuldade
-        level->dificult++;
+    level->dificult++;
+
     frameAddNumber(statsFrame, level->dificult, 2, 21, 12); //atualiza statsFrame com o numero do novo nivel de dificuldade
 
     if(level->newBallTime > 10) //diminui o tempo para surgir novas bolas
         level->newBallTime -= 2;
 
-    // Inicia em 0.15 e decai exponencialmente até 0.02 na dificuldade 15 aproximadamente
-    if(level->errorProb > 0.02)
-        level->errorProb = pow(0.99, level->dificult) - 0.84;
+    // Inicia em 0.2 e decai exponencialmente até 0.02 na dificuldade 15 aproximadamente
+    level->errorProb = abs(pow(0.985, level->dificult) - 0.78);
     level->nBall =0;
     level->newBallCurrentTime = 3;
     level->p1Score = 5;
@@ -114,7 +116,11 @@ void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PAD
 
     // a cada 5 niveis de dificuldade reduz em um a largura do padP1
     if(level->dificult % 5 == 0)
-        pad[1].len--;
-    if(pad[0].speed > 50) //aumenta taxa de atualizaçao do bot
-        pad[0].speed = pad[0].speed - 0.5*level->dificult + 1;
+        pad[1].len -= 2;
+    if(pad[0].speed > 35) //aumenta taxa de atualizaçao do bot
+        //pad[0].speed = pad[0].speed - 0.5*level->dificult + 1;
+        pad[0].speed = (int) BOT_VEL*pow(0.96, (level->dificult -1));
+    sprintf(str,"ERROR: %f VEL: %d DIF: %d BALL VEL:%d\n",level->errorProb, pad[0].speed, level->dificult, BALL_VEL);
+    fputs(str, file);
+    fclose(file);
 }

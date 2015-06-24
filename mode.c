@@ -19,8 +19,8 @@ void CPUinitGame(){
 	// Iniciando pads. PADS distintos e poucos inicialização inline.
 	PADDLE pad[2] = {
 		{.position.x = (MAP_WIDTH - 20)/2, .position.y = 1, .velocity.x = 0,
-		.velocity.y = 0, .len = 20, .charCode = PAD1H_BLOCK, .botMode = TRUE, .vertical = FALSE,
-		.advanceKey = 'a', .regressKey = 'd', .speed = 100},
+		.velocity.y = 0, .len = 20, .charCode = PAD1H_BLOCK, .botMode = TRUE, .vertical = FALSE
+		, .advanceKey = 'a', .regressKey = 'd', .speed = 80},
 
 		{.position.x = (MAP_WIDTH - 20)/2, .position.y = MAP_HEIGHT-2, .velocity.x = 0,
 		.velocity.y = 0, .len = 20, .charCode = PAD2H_BLOCK, .botMode = FALSE, .vertical = FALSE,
@@ -29,7 +29,7 @@ void CPUinitGame(){
 	// Iniciando LEVEL
 	LEVEL level = {.dificult = 0, .mapCode = 0, .mode = PvsB, .errorProb = 0.2, .nPad = 2, .nBall =0, .newBallTime = 30,
 		.newBallCurrentTime = 3, .p1Score = 1, .p2Score = 1};
-
+	level.mapCode = randNumber(5);
 	// GRÁFICA
 	// Iniciando janelas
 	WINDOW *mainWin, *statsWin;
@@ -55,7 +55,14 @@ void CPUinitGame(){
 	while(ch != ESC){ // Enquanto a tecla ESC nao for pressionada
         attGame = FALSE;
         attStats = FALSE;
+/*
+		if(millis % 1000){
+			newLevel(&level, statsFrame, gameFrame, ball, pad);
+			if(level.dificult > 19)
+			ch = ESC; //Força saida para o menu
 
+		}
+*/
 		if(millis % pad[0].speed  == 0){
             padControl(&pad[0], ball, gameFrame, &level, ch);
             attGame = TRUE;
@@ -87,13 +94,18 @@ void CPUinitGame(){
         if(level.p1Score < 1){
             //PLAYER GANHOU - JOGO RECOMEÇA COM NIVEL MAIS ALTO
 			blinkPlayer(statsWin, statsFrame, statsColorFrame, 1);
-			newLevel(&level, statsFrame, gameFrame, ball, pad);
+			if(level.dificult < 20)
+				newLevel(&level, statsFrame, gameFrame, ball, pad);
+			else{
+				changeRecord(&level);
+            	ch = ESC; //Força saida para o menu
+			}
             attGame = TRUE;
             attStats = TRUE;
         }
-        
+
         if(level.p2Score < 1){
-            //PLAYER PERDEU - COMPARA NIVEL COM O RECORDE ATUAL E MODIFICA, OU VOLTA PARA O MENU 
+            //PLAYER PERDEU - COMPARA NIVEL COM O RECORDE ATUAL E MODIFICA, OU VOLTA PARA O MENU
 			blinkPlayer(statsWin, statsFrame, statsColorFrame, 2);
             if(compareRecord(&level))
                 changeRecord(&level);
@@ -147,9 +159,8 @@ void PVPinitGame(){
 		.advanceKey = KEY_LEFT, .regressKey = KEY_RIGHT, .speed = 25}
 		};
 	// Iniciando LEVEL
-	LEVEL level = {.dificult = 0, .mapCode = 0, .mode = PvsB, .errorProb = 0.2, .nPad = 2, .nBall =0, .newBallTime = 30,
+	LEVEL level = {.dificult = 0, .mapCode = 0, .mode = PvsP, .nPad = 2, .nBall =0, .newBallTime = 30,
 		.newBallCurrentTime = 3, .p1Score = 5, .p2Score = 5};
-
 	// GRÁFICA
 	// Iniciando janelas
 	WINDOW *mainWin, *statsWin;
@@ -214,9 +225,9 @@ void PVPinitGame(){
             attStats = TRUE;
             ch = ESC; //força saida para o menu
         }
-        
+
         if(level.p2Score < 1){
-            //PLAYER 1 GANHOU 
+            //PLAYER 1 GANHOU
 			blinkPlayer(statsWin, statsFrame, statsColorFrame, 2);
             attGame = TRUE;
             attStats = TRUE;
@@ -248,9 +259,9 @@ void showRecord(){
     WINDOW *recordWin;
     RECORD bufferRecord = {.playerName = " ", .recordLevel = 0};
     int ch = 0;
-    
+
     recordWin = create_newwin(10, 50, (LINES-10)/2, (COLS-50)/2);
-    
+
     while(ch != ESC){
         if(arq = fopen("record", "rb")){
             fread(&bufferRecord, sizeof(RECORD), 1, arq);
@@ -259,7 +270,7 @@ void showRecord(){
         mvwprintw(recordWin, 4, (50-strlen(bufferRecord.playerName)-6)/2, "NOME: %s", bufferRecord.playerName);
         mvwprintw(recordWin, 5, 20, "LEVEL: %d", bufferRecord.recordLevel);
         wrefresh(recordWin);
-        
+
         ch = wgetch(recordWin);
     }
     delwin(recordWin);

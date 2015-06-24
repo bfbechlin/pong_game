@@ -2,7 +2,7 @@
 
 /* ARG = ponteiro para uma WINDOW
    RET/MOD = retorna um inteiro
-   configMenu() organiza o menu inicial e retorna um inteiro dependendo da escolha marcada com o highlight */ 
+   configMenu() organiza o menu inicial e retorna um inteiro dependendo da escolha marcada com o highlight */
 int configMenu(WINDOW *menuWin){
     int selected=1;
     int choice=0;
@@ -47,7 +47,7 @@ int configMenu(WINDOW *menuWin){
 
 /* ARG = ponteiro para WINDOW, um inteiro para marcar opçao realcada, um vetor de strings com as opcçoes do menu e um inteiro com o numero de opções
    RET/MOD = modifica o menu para realçar a opção marcada
-   printMenu() escreve o menu na tela realçando uma opção selecionada e reescrevendo todas as outras normalmente */ 
+   printMenu() escreve o menu na tela realçando uma opção selecionada e reescrevendo todas as outras normalmente */
 void printMenu(WINDOW *menuWin, int selected, char *opt[], int numOpt){
     int textPosX=2, textPosY=2, i;
 
@@ -65,7 +65,7 @@ void printMenu(WINDOW *menuWin, int selected, char *opt[], int numOpt){
 }
 /* ARG = inteiro com altura de WINDOW, int com a largura de WINDOW, int com a posição inicial em y de WINDOW e int com a poisção incial em x de WINDOW
    MOD/RET = retorna um tipo WINDOW
-   create_newwin() recebe os atributos da nova janela, reserva o seu espaço em memoria com newwin e imprime na tela um esboço da janela */ 
+   create_newwin() recebe os atributos da nova janela, reserva o seu espaço em memoria com newwin e imprime na tela um esboço da janela */
 WINDOW *create_newwin(int height, int width, int starty, int startx){
     WINDOW *localWin;
 
@@ -113,7 +113,7 @@ void delframe(FRAME *frame){
 
 /* ARG = um tipo WINDOW, ponteiro para FRAME de stats, ponteiro para FRAME de statsColor e um inteiro com o numero do jogador
    MOD/RET = modifica o FRAME statsColor
-   blinkPlayer() recebe os atributos da nova janela, reserva o seu espaço em memoria com newwin e imprime na tela um esboço da janela */ 
+   blinkPlayer() recebe os atributos da nova janela, reserva o seu espaço em memoria com newwin e imprime na tela um esboço da janela */
 void blinkPlayer(WINDOW *statsWin, FRAME *statsFrame, FRAME *statsColorFrame, int player){
     int line, colorPair1, colorPair2;
     line = (player - 1)*25 + 1;
@@ -285,7 +285,7 @@ void frameDraw(WINDOW *localWin, FRAME *frame, FRAME *frameColor){
 */
 void newBallTimeAtt(FRAME *frame, FRAME *frameColor, int newBallTime){
     int colorPair;
-    if(newBallTime > 8)
+    if(newBallTime > 6)
         colorPair = 1 + '0';
     else if(newBallTime > 3)
         colorPair = 9 + '0';
@@ -449,7 +449,7 @@ void debugTable(FRAME *frame, char* file){
 /* ARG = ponteiro para LEVEL
    RET/MOD = retorna um int
    comparaRecord() carrega busca no level qual o nivel de dificuldade atual e compara com o valor salvo no arquivo binario "record".
-   Se o valor do nivel for maior retorna 1, senao retorna 0 */  
+   Se o valor do nivel for maior retorna 1, senao retorna 0 */
 int compareRecord(LEVEL *level){
     FILE *arq;
     RECORD bufferRecord = {.playerName = " ", .recordLevel = 0};
@@ -461,20 +461,20 @@ int compareRecord(LEVEL *level){
     if(level->dificult > bufferRecord.recordLevel)
         return TRUE;
     else return FALSE;
-        
-    
+
+
 }
 
 /* ARG = ponteiro para LEVEL
    RET/MOD = modifica o arquivo binario "record"
-   changeRecord() primeiramente cria um nova janela para ler as informações do jogador, após salva o novo RECORD no arquivo binario */  
+   changeRecord() primeiramente cria um nova janela para ler as informações do jogador, após salva o novo RECORD no arquivo binario */
 void changeRecord(LEVEL *level){
     FILE *arq;
     RECORD bufferRecord;
     WINDOW *recordWin;
     char msg[] = "Entre com seu nome: ";
     char rec[] = "NOVO RECORDE!";
-    
+
     echo();
     nocbreak();
 
@@ -482,9 +482,9 @@ void changeRecord(LEVEL *level){
     mvwprintw(recordWin, 4, (30+strlen(msg)-strlen(rec))/2, "%s", rec); //escreve msg no meio da janela
     mvwprintw(recordWin, 5, (30 - strlen(msg))/2, "%s", msg); //escreve msg no meio da janela
     wrefresh(recordWin);
-    wgetstr(recordWin, bufferRecord.playerName); //espera entrada do nome do jogador
-    
-    bufferRecord.recordLevel = level->dificult; 
+    wgetnstr(recordWin, bufferRecord.playerName, NAME_LEN -1); //espera entrada do nome do jogador
+
+    bufferRecord.recordLevel = level->dificult;
 
     if(arq = fopen("record", "wb"))
         fwrite(&bufferRecord, sizeof(RECORD), 1, arq);

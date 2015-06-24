@@ -2,12 +2,9 @@
 
 void CPUinitGame(){
 	long unsigned int millis;
-	/*
-		ch é iniciado pois caso c.c. chamando o menu e voltando para o jogo há problemas
-		com pois o ESC fica salvo na variável. Isso acontece devido a todas as vezes
-		que o programa entra nesse função ele aloca exatamente da mesma forma a memória
-		então o lixo que estaria na variável é os valores da antiga variável.
-	*/
+	clock_t start, end;
+	double cpu_time_used;
+
 	int gameWinPosX, gameWinPosY;
 	int ch = 0;
 	BOOL attGame, attStats;
@@ -27,7 +24,7 @@ void CPUinitGame(){
 		.advanceKey = KEY_LEFT, .regressKey = KEY_RIGHT, .speed = 25}
 		};
 	// Iniciando LEVEL
-	LEVEL level = {.dificult = 0, .mapCode = 0, .mode = PvsB, .errorProb = 0.2, .nPad = 2, .nBall =0, .newBallTime = 30,
+	LEVEL level = {.dificult = 10, .mapCode = 0, .mode = PvsB, .errorProb = 0.2, .nPad = 2, .nBall =0, .newBallTime = 30,
 		.newBallCurrentTime = 3, .p1Score = 1, .p2Score = 1};
 	level.mapCode = randNumber(5);
 	// GRÁFICA
@@ -53,16 +50,29 @@ void CPUinitGame(){
 	modeGamewrite(statsFrame, &level);
 	padControl(&pad[0], ball, gameFrame, &level, ch);
 	while(ch != ESC){ // Enquanto a tecla ESC nao for pressionada
+		start = clock();
         attGame = FALSE;
         attStats = FALSE;
-/*
-		if(millis % 1000){
-			newLevel(&level, statsFrame, gameFrame, ball, pad);
-			if(level.dificult > 19)
-			ch = ESC; //Força saida para o menu
 
+	if(millis % BALL_VEL == 0){
+			ballControl(ball, pad, gameFrame, &level);
+			attGame = TRUE;
 		}
-*/
+		/* Adicionado BOLAS*/
+		if(millis % 1000 == 0){
+			level.newBallCurrentTime --;
+			scoreAtt(statsColorFrame, &level);
+			attStats = TRUE;
+		}
+		if(level.newBallCurrentTime == 0){
+			level.newBallCurrentTime = level.newBallTime;
+			if(level.nBall < MAXBALL){
+				ballAdd(ball, pad, &level);
+				attGame = TRUE;
+			}
+			attStats = TRUE;
+		}
+
 		if(millis % pad[0].speed  == 0){
             padControl(&pad[0], ball, gameFrame, &level, ch);
             attGame = TRUE;
@@ -72,24 +82,6 @@ void CPUinitGame(){
             padControl(&pad[1], ball, gameFrame, &level, ch);
             attGame = TRUE;
         }
-        if(millis % BALL_VEL == 0){
-            ballControl(ball, pad, gameFrame, &level);
-        	attGame = TRUE;
-        }
-        /* Adicionado BOLAS*/
-        if(millis % 1000 == 0){
-        	level.newBallCurrentTime --;
-        	scoreAtt(statsColorFrame, &level);
-        	attStats = TRUE;
-		}
-        if(level.newBallCurrentTime == 0){
-       		level.newBallCurrentTime = level.newBallTime;
-       		if(level.nBall < MAXBALL){
-       			ballAdd(ball, pad, &level);
-       			attGame = TRUE;
-       		}
-       		attStats = TRUE;
-       	}
 
         if(level.p1Score < 1){
             //PLAYER GANHOU - JOGO RECOMEÇA COM NIVEL MAIS ALTO
@@ -122,7 +114,9 @@ void CPUinitGame(){
         	frameDraw(statsWin, statsFrame, statsColorFrame);
         	wrefresh(statsWin);
         }
-   	    usleep(880); //1 millisegundo - execução média
+		end = clock();
+		cpu_time_used = (((double) (end - start)) / CLOCKS_PER_SEC) * 1000; // /mili
+   	    usleep(1000 - (int)cpu_time_used); //1 millisegundo - execução média
         millis ++;
     }
     delwin(statsWin);
@@ -134,12 +128,9 @@ void CPUinitGame(){
 
 void PVPinitGame(){
 	long unsigned int millis;
-	/*
-		ch é iniciado pois caso c.c. chamando o menu e voltando para o jogo há problemas
-		com pois o ESC fica salvo na variável. Isso acontece devido a todas as vezes
-		que o programa entra nesse função ele aloca exatamente da mesma forma a memória
-		então o lixo que estaria na variável é os valores da antiga variável.
-	*/
+	clock_t start, end;
+	double cpu_time_used;
+
 	int gameWinPosX, gameWinPosY;
 	int ch = 0;
 	BOOL attGame, attStats;
@@ -187,8 +178,28 @@ void PVPinitGame(){
     modeGamewrite(statsFrame, &level);
 	padControl(&pad[0], ball, gameFrame, &level, ch);
 	while(ch != ESC){ // Enquanto a tecla ESC nao for pressionada
+		start = clock();
         attGame = FALSE;
         attStats = FALSE;
+
+		if(millis % BALL_VEL == 0){
+			ballControl(ball, pad, gameFrame, &level);
+			attGame = TRUE;
+		}
+		/* Adicionado BOLAS*/
+		if(millis % 1000 == 0){
+			level.newBallCurrentTime --;
+			scoreAtt(statsColorFrame, &level);
+			attStats = TRUE;
+		}
+		if(level.newBallCurrentTime == 0){
+			level.newBallCurrentTime = level.newBallTime;
+			if(level.nBall < MAXBALL){
+				ballAdd(ball, pad, &level);
+				attGame = TRUE;
+			}
+			attStats = TRUE;
+		}
 
 		if(millis % pad[0].speed  == 0){
             padControl(&pad[0], ball, gameFrame, &level, ch);
@@ -199,25 +210,7 @@ void PVPinitGame(){
             padControl(&pad[1], ball, gameFrame, &level, ch);
             attGame = TRUE;
         }
-        if(millis % BALL_VEL == 0){
-            ballControl(ball, pad, gameFrame, &level);
-        	attGame = TRUE;
-        }
-        /* Adicionado BOLAS*/
-        if(millis % 1000 == 0){
-        	level.newBallCurrentTime --;
-        	scoreAtt(statsColorFrame, &level);
-        	attStats = TRUE;
-		}
-        if(level.newBallCurrentTime == 0){
-       		level.newBallCurrentTime = level.newBallTime;
-       		if(level.nBall < MAXBALL){
-       			ballAdd(ball, pad, &level);
-       			attGame = TRUE;
-       		}
-       		attStats = TRUE;
-       	}
-
+    
         if(level.p1Score < 1){
             //PLAYER 2 GANHOU
 			blinkPlayer(statsWin, statsFrame, statsColorFrame, 1);
@@ -244,7 +237,9 @@ void PVPinitGame(){
         	frameDraw(statsWin, statsFrame, statsColorFrame);
         	wrefresh(statsWin);
         }
-   	    usleep(880); //1 millisegundo - execução média
+		end = clock();
+		cpu_time_used = (((double) (end - start)) / CLOCKS_PER_SEC) * 1000; // /mili
+		usleep(1000 - (int)cpu_time_used); //1 millisegundo - execução média
         millis ++;
     }
     delwin(statsWin);

@@ -81,10 +81,7 @@ void loadLevel(LEVEL *level){
 */
 void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PADDLE *pad){
     FILE *arq;
-    FILE *file;
-    char str[50];
     RECORD bufferRecord = {.recordLevel = 0, .playerName = " "};
-    file = fopen("diff.txt", "a");
 
     if(arq = fopen("record", "rb")){
         fread(&bufferRecord, sizeof(RECORD), 1, arq);
@@ -100,12 +97,13 @@ void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PAD
 
     frameAddNumber(statsFrame, level->dificult, 2, 21, 12); //atualiza statsFrame com o numero do novo nivel de dificuldade
 
-    if(level->newBallTime > 10) //diminui o tempo para surgir novas bolas
-        level->newBallTime -= 2;
+    if(level->newBallTime > 7) //diminui o tempo para surgir novas bolas
+        level->newBallTime = (int)(level->dificult*-1.052 + 29);
 
     // Inicia em 0.2 e decai exponencialmente até 0.02 na dificuldade 15 aproximadamente
-    level->errorProb = abs(pow(0.985, level->dificult) - 0.78);
-    level->nBall =0;
+    if(level->errorProb > 0.02)
+        level->errorProb = pow(0.985, level->dificult) - 0.78;
+    level->nBall = 0;
     level->newBallCurrentTime = 3;
     level->p1Score = 5;
     level->p2Score = 5;
@@ -118,9 +116,5 @@ void newLevel(LEVEL *level, FRAME *statsFrame, FRAME *gameFrame, BALL *ball, PAD
     if(level->dificult % 5 == 0)
         pad[1].len -= 2;
     if(pad[0].speed > 35) //aumenta taxa de atualizaçao do bot
-        //pad[0].speed = pad[0].speed - 0.5*level->dificult + 1;
         pad[0].speed = (int) BOT_VEL*pow(0.96, (level->dificult -1));
-    sprintf(str,"ERROR: %f VEL: %d DIF: %d BALL VEL:%d\n",level->errorProb, pad[0].speed, level->dificult, BALL_VEL);
-    fputs(str, file);
-    fclose(file);
 }

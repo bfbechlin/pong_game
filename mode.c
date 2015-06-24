@@ -24,7 +24,7 @@ void CPUinitGame(){
 		.advanceKey = KEY_LEFT, .regressKey = KEY_RIGHT, .speed = 25}
 		};
 	// Iniciando LEVEL
-	LEVEL level = {.dificult = 10, .mapCode = 0, .mode = PvsB, .errorProb = 0.2, .nPad = 2, .nBall =0, .newBallTime = 30,
+	LEVEL level = {.dificult = 0, .mapCode = 0, .mode = PvsB, .errorProb = 0.2, .nPad = 2, .nBall =0, .newBallTime = 30,
 		.newBallCurrentTime = 3, .p1Score = 1, .p2Score = 1};
 	level.mapCode = randNumber(5);
 	// GRÁFICA

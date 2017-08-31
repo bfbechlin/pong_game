@@ -33,5 +33,10 @@ ranmar.o: ranmar.c
 bot.o: bot.c
 	$(CC) $(CFLAGS) bot.c
 
+.PHONY: setup
+
+setup:
+	sudo apt-get install libncurses-dev -y
+	
 clean:
 	rm *o pong

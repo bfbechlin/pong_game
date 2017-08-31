@@ -43,7 +43,7 @@ $ ./pong
 
 ### Como jogar
 
-![Alt text](resources/first_screen.png)
+![Alt text](resources/first_screen.resized.png)
 A partir do menu principal é possível escolher entre os dois modos de jogo:
 
 * Player vs CPU
@@ -53,9 +53,9 @@ No modo de um jogador a raquete é controlada usando as setas direcionais e a te
 
 ### Imagens do Jogo
 
-![Alt text](resources/example_1.png)
-![Alt text](resources/example_2.png)
-![Alt text](resources/example_3.png)
+![Alt text](resources/example_1.resized.png)
+![Alt text](resources/example_2.resized.png)
+![Alt text](resources/example_3.resized.png)
 
 ---
 ## Organização do código
